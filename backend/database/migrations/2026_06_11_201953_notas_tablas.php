@@ -22,10 +22,10 @@ return new class extends Migration
         $table->string('categoria'); //! Se coloca el tipo de tarea a realizar, proyecto, examnen u otro 
         $table->text('Decripcion'); //!Descripcion de la tarea 
         
-        // Campos opcionales (Nullable) según el tipo de perfil
+        //! Campos opcionales  según el tipo de perfil
         $table->string('materia')->nullable(); //! Materia
-        $table->date('fechaEntrega')->nullable(); // fechaEntrega / fechaExamen
-        $table->date('fechaInicio')->nullable(); // fechaInicio
+        $table->date('fechaEntrega')->nullable(); //!es la fecha de entrega ya sea de un examen o proyecto 
+        $table->date('fechaInicio')->nullable(); //!para almacenar la fecha de inicio 
         
         $table->timestamps(); //! Define los valores de tiempo fechas
     });
@@ -35,7 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notas');
+        Schema::dropIfExists('notas');//! En caso de rollback
         
     }
 };
