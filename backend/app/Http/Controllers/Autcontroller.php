@@ -13,8 +13,8 @@ class Autcontroller extends Controller
     public function registrar(Request $request){
         //* Validacion de datos de desde afuera(react )
         $request->validate([
-            'name' => ['requiered', 'string', 'max:225'],
-            'lastname' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:225'],
+            'lastName' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:100', 'unique:users'],
             'password' => ['required', 'string', 'min:8'] 
 
@@ -24,7 +24,7 @@ class Autcontroller extends Controller
         //*Inyeccion de dependencias
         $user = User::create([
             'name' => $request->name,
-            'lastname' =>$request->lastname,
+            'lastName' =>$request->lastName,
             'email'=> $request->email,
             'password'=> Hash::make($request->password)//*Se encripta la contraseña 
         ]);
