@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Autcontroller;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// * Aqui se pondran las rutas para registrar un nuevo usuario
+Route::post('/registro', [Autcontroller::class,'registrar']);
+//* Ruta pa hacer el logeo
+Route::post('/login', [Autcontroller::class,'ingresar']);
