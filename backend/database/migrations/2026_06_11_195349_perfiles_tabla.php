@@ -19,7 +19,7 @@ return new class extends Migration
         $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
         $table->string('nombrePerfil');//! nombre asignado a cada perfil 
         $table->string('tipoPerfil'); //! es el tipo si es Estudiante o personal 
-        $table->string('contraseñaPerfil', 6)->nullable(); //!definiendo contraseña del perfil
+        $table->string('passwordPerfil')->nullable(); //!definiendo contraseña del perfil
         $table->timestamps();//! Revisa el tiempo de creacion 
     });
         //

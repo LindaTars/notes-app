@@ -50,18 +50,17 @@ class Autcontroller extends Controller
                 'status'=>'error',
                 'message' => 'contraseña incorrecta',
                 'data' => $user
-            ], 401);
+            ], 404);
          }else{
             return response()->json([
                 'status'=>'success',
                 'message' => 'ingreso correctamente ',
                 'data' => $user
-            ], 201);   
+            ], 200);   
   
         };
        
     }
-
-
+   
 }
 //Todo: Lo siguiente es hacer las rutas para manegar las acciones jsjsj

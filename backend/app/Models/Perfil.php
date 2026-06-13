@@ -21,16 +21,16 @@ class Perfil extends Model
     protected $fillable = [
         'user_id',
         'nombrePerfil',
-        'tipoperfil',
-        'contraseñaPerfil',
+        'tipoPerfil',
+        'passwordPerfil',
     ];
 //* Funcion para rlacionar al perfil con el usuario 
-    protected function user(){
+    public function user(){
         //*Se usa belongsTo para acceder a user desde perfil 
         return $this->belongsTo(User::class, 'user_id');
     }
 //* Funcion para relacionar el Perfil con las Notas
-    protected function notas(){
+    public function notas(){
         //* Usamor hasMany para definir las relaciones de uno a muchos, un padre con muchos hijos, un perfil con muchas notas 
         return $this-> hasMany(Notas::class, 'perfil_id');
     }

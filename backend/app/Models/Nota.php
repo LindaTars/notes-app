@@ -23,7 +23,7 @@ class Nota extends Model
     ];
 
 //* Funcion para relacionar el notas con las Perfil, inversa
-    protected function notas(){
+    protected function nota(){
       //*Se usa belongsTo para hacer que Nota pertenesca a Perfil espesifico usando su ID
         return $this-> belongsTo(Perfil::class, 'perfil_id');
     }
