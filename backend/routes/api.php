@@ -15,14 +15,14 @@ Route::post('/newPerfil', [PerfilController::class,'crearPerfil']);//! funciona
 //* Metodo Get para los perfiles
 Route::get('/viewPerfil', [PerfilController::class, 'mostrarPerfil']);//! Funciona
 //* Eliminar el perfil mediante el id
-Route::delete('deletePerfil/{id}', [PerfilController::class, 'eliminarPerfil']);//! Pasa por el cuerpo el body por que es una llave
+Route::delete('/deletePerfil/{id}', [PerfilController::class, 'eliminarPerfil']);//! Pasa por el cuerpo el body por que es una llave
 //* Editar perfil mediante id
-Route::put('updatePerfil/{id}', [PerfilController::class, 'editarPerfil']);//Todo: falta hacer funcionar esta funcion
+Route::put('/updatePerfil/{id}', [PerfilController::class, 'editarPerfil']);//Todo: falta hacer funcionar esta funcion
 //* Ruta para crear tareas
-Route::post('createNota', [NotaController::class, 'crearNota']);//! Funciona
+Route::post('/createNota', [NotaController::class, 'crearNota']);//! Funciona
 //* Ruta para eliminar tarea
-Route::delete('deleteNota/{id}', [NotaController::class, 'eliminarTarea']);//! ya es funcional
+Route::delete('/deleteNota/{id}', [NotaController::class, 'eliminarTarea']);//! ya es funcional
 //* Ruta para mostrar todas las tareas
-Route::get('viewNota', [NotaController::class, 'mostrarTareas']);
+Route::get('/viewNota', [NotaController::class, 'mostrarTareas']);
 //* Actualizar Nota 
-Route::put('updateNota/{id}', [NotaController::class, 'actualizarNota']);
+Route::put('/updateNota/{id}', [NotaController::class, 'actualizarNota']);
