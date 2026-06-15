@@ -24,6 +24,11 @@ class Perfil extends Model
         'tipoPerfil',
         'passwordPerfil',
     ];
+
+    protected $casts = [
+        'materias'=> 'array',
+    ];
+
 //* Funcion para rlacionar al perfil con el usuario 
     public function user(){
         //*Se usa belongsTo para acceder a user desde perfil 

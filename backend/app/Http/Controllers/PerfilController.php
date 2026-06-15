@@ -15,15 +15,29 @@ class PerfilController extends Controller
             'user_id' => ['required', 'integer', 'exists:users,id'],  
             'nombrePerfil'=>['required', 'string', 'max:50'],
             'tipoPerfil'=>['required', 'string'],
-            'passwordPerfil'=>['nullable', 'string', 'max:8']//! se pone el nullable por que buede o no tenr contraseña 
+            'passwordPerfil'=>['nullable', 'string', 'max:8']//! se pone el nullable por que buede o no tener contraseña 
         ]);
+//* Se revisa que tipo de perfil se usa, Estudiante o Personal
+        if($request->tipoPerfil === 'Estudiante'){  
+             $quePerfil = [
+                'rol' => $request->tipoPerfil,
+                'materias'=>['tipo', 'matematicas', '', ''],//!Materias las guarda
+             ];   
 
+        }else{
+            $quePerfil = [
+                'rol' => $request->tipoPerfil,
+                'materias'=>[],//! No mete ninguna materia
+             ];   
+        }
         $perfil = Perfil::create([
             'user_id' =>$request->user_id,
             'nombrePerfil'=>$request->nombrePerfil,
-            'tipoPerfil'=>$request->tipoPerfil,
+            // 'tipoPerfil'=>$request->tipoPerfil,
+            'tipoPerfil' => json_encode($quePerfil),//! Resive el tipo de perfiil, que se analizo en el if
             'passwordPerfil' => $request->passwordPerfil ? Hash::make($request->passwordPerfil) : null
         ]);
+
         //* Maneja una respuesta si se creo el usuario correctamente
         return response()->json([
             'status'=>'success',

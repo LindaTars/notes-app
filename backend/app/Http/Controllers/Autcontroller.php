@@ -17,7 +17,7 @@ class Autcontroller extends Controller
             'lastName' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:100', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
-            'userName'=>['required', 'string', 'max:100', 'unique:users'],                
+           // 'userName'=>['required', 'string', 'max:100', 'unique:users'],   //Todo: eliminar             
         ]);
         //* Los datos de lo anterior se mandaran al modelo para  crear el usuario en postgres
         //*Inyeccion de dependencias
@@ -26,7 +26,7 @@ class Autcontroller extends Controller
             'lastName' =>$request->lastName,
             'email'=> $request->email,
             'password'=> Hash::make($request->password),//*Se encripta la contraseña 
-            'userName'=> $request->userName
+           // 'userName'=> $request->userName//todo, eliminar
         ]);
         //* Maneja una respuesta si se creo el usuario correctamente
         return response()->json([
@@ -38,12 +38,11 @@ class Autcontroller extends Controller
     //!Funcion Iniciar secion 
     public function ingresar(Request $request){
         $request -> validate([
-            'userName' => ['required', 'string', 'max:100'],
-            'password' => ['required', 'string', 'min:8']   
+            'email' => ['required', 'string', 'max:100'],//Todo: cambiar por el email
+            'password' => ['required', 'string', 'min:8']  
         ]);
-
         //* busca la existencia de algun usuario con ese nombre de usuario
-        $user = User::where('userName', $request->userName)->first();
+        $user = User::where('email', $request->email)->first();//Todo:  cambiar a email
         //* Valida las contraseñas y que el usuairo exista 
           if (!$user || !Hash::check($request ->password, $user ->password)){
             return response()->json([
@@ -63,4 +62,3 @@ class Autcontroller extends Controller
     }
    
 }
-//Todo: Lo siguiente es hacer las rutas para manegar las acciones jsjsj

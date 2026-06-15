@@ -23,7 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'lastName',
-        'userName'
+      //  'userName'//todo: Eliminar,
     ];
     protected $hidden = [
         'password',
