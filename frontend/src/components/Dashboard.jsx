@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import NuevaTarea from '../NuevaTarea'
+import NuevaTarea from './NuevaTarea'
 
 const Dashboard = ({perfilUsuario, username}) => {
 

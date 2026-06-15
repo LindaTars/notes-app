@@ -25,20 +25,33 @@ const Login = ( {login, setLogin} ) =>  {
         // }
 
         //TODO prueba local
-        try {
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: { 'Content-Type': 'application/json' },
-            });
+    //     try {
+    //         const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    //             method: 'POST',
+    //             body: JSON.stringify(formData),
+    //             headers: { 'Content-Type': 'application/json' },
+    //         });
 
-            const info = await response.json();
-            console.log("Respuesta: ", info);
+    //         const info = await response.json();
+    //         console.log("Respuesta: ", info);
             
-        } catch (error) {
-            console.error("Error de comunicación con el back", error);
-        }
-    };
+    //     } catch (error) {
+    //         console.error("Error de comunicación con el back", error);
+    //     }
+
+    const endpoint = login ? '/api/login' : '/api/registro';
+    try {
+        const r = await fetch(endpoint, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(formData),
+        })
+        const info = await r.json()
+        console.log("Respuesta: ", info)
+    } catch (error) {
+        console.error("Error de comunicación con el back", error)
+    }
+};
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#fef6f0]">
