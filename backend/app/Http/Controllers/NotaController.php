@@ -57,9 +57,42 @@ class NotaController extends Controller
             'count'=> $nota->count(),
             'data'=> $nota
         ]);
-           
-        
-
     }
+    public function actualizarNota ($id,Request $request){
+        $request->validate([
+            'perfil_id' =>['required', 'integer', 'exists:perfiles,id'],
+            'nombreTarea' =>['nullable', 'string', 'max:50'], 
+            'categoria'=>['nullable', 'string', 'max:20'],
+            'Descripcion'=>['nullable', 'string', 'max:100'],
+            'materia'=>['nullable', 'string', 'max:50'],
+            'fechaEntrega'=>['nullable', 'date' ],
+            'fechaInicio'=>['nullable', 'date']
+        ]);
+        $buscar  =Nota::find($id);
+
+        if(! $buscar){
+            return response()->json([
+            'status'=>'no se encuentra ese id',
+            'message'=>'el perfil no se encuentra'
+        ],404);
+        }
+        $buscar->perfil_id = $request->perfil_id;
+        $buscar-> nombreTarea = $request->nombreTarea;
+        $buscar->categoria = $request->categoria;
+        $buscar->Descripcion = $request->Descripcion;
+        $buscar-> materia= $request->materia;
+        $buscar->fechaEntrega = $request->fechaEntrega;
+        $buscar-> fechaInicio= $request->fechaInicio;
+
+        $buscar->save();
+
+        //* se Manda una respuesta de ser correcto 
+        return response()->json([
+            'status'=>'succes',
+            'message'=>'Cambios correctos al perfil',
+            'data'=> $buscar
+        ],200);
+    } 
+    
 
 }

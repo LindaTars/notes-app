@@ -59,6 +59,8 @@ class PerfilController extends Controller
         ], 201);
         }    
     }
+
+
     //? Funcion para edtar el perfil 
     public function editarPerfil($id, Request $request){
         //* Validamos los datos 
@@ -70,34 +72,31 @@ class PerfilController extends Controller
         ]);
         //* Se busca el perfil por medio de id
         $buscar = Perfil::find($id);
-    //* Validamos el 
+        //* Validamos el 
         if(! $buscar){
             return response()->json([
                 'status'=>'no se encuentra ese id',
                 'message'=>'el perfil no se encuentra'
-            ],401);
+            ],404);
 
-        }else{
+        }
         //* Se revisa que datos se cambiaran y pues los cambia
         //TODO: hace falta resolver el problema de los cambios
-        $perfil->user_id = $request->user_id;
-        $nombre->nombrePerfil = $request->nombrePerfil;
-        $tipo->tipoPerfil = $request->tipoPerfil;
-        }
-        
+        $buscar->user_id = $request->user_id;
+        $buscar->nombrePerfil = $request->nombrePerfil;
+        $buscar->tipoPerfil = $request->tipoPerfil;
         //* se valida la contraseña a camniar 
-        if($request->falled('passwordPerfil')){
-            $perfil->passwordPerfil = Hash::make($request->passwordPerfil);
+        if($request->filled('passwordPerfil')){
+            $buscar->passwordPerfil = Hash::make($request->passwordPerfil);
         }
         //* se Actualizan los cambios de lo que ya se valido 
-        $perfil->save();
-        $nombre->save();
-        $tipo->save();
+        $buscar->save();
+  
         //* se Manda una respuesta de ser correcto 
-        return response->json([
+        return response()->json([
             'status'=>'succes',
             'message'=>'Cambios correctos al perfil',
-            'data'=> $perfil
+            'data'=> $buscar
         ],200);
     }
 
