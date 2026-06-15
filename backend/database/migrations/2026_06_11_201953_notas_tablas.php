@@ -20,7 +20,7 @@ return new class extends Migration
         //! Atributos para la tabla
         $table->string('nombreTarea'); //!nombre de la tarea
         $table->string('categoria'); //! Se coloca el tipo de tarea a realizar, proyecto, examnen u otro 
-        $table->text('Decripcion'); //!Descripcion de la tarea 
+        $table->text('Descripcion'); //!Descripcion de la tarea 
         
         //! Campos opcionales  según el tipo de perfil
         $table->string('materia')->nullable(); //! Materia

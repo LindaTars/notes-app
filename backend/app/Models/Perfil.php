@@ -32,6 +32,6 @@ class Perfil extends Model
 //* Funcion para relacionar el Perfil con las Notas
     public function notas(){
         //* Usamor hasMany para definir las relaciones de uno a muchos, un padre con muchos hijos, un perfil con muchas notas 
-        return $this-> hasMany(Notas::class, 'perfil_id');
+        return $this->hasMany(Nota::class, 'perfil_id');
     }
 }

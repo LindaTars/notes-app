@@ -42,15 +42,8 @@ class PerfilController extends Controller
         ]);
     }
     public function eliminarPerfil ($id){//! Se recibe lo que llega desde el body 
-    //! ya no se valida nada que llege en json
-        //Validar Parametros para eliminar el perfil
-        // $request->validate([
-          // 'user_id' => ['required', 'integer', 'exists:users,id'], 
-        //     'perfil_id' =>['required', 'integer', 'exists:perfiles,id'],
-         //'passwordPerfil'=>['nullable', 'string', 'max:8']
-        // ]);
+
         $buscar =Perfil::find($id);//! se revisa que exista ese id qu ellega del body
-       
         if(! $buscar ){
             return response()->json([
                 'status'=>'tas mal',
@@ -64,7 +57,48 @@ class PerfilController extends Controller
                 'message'=>'El perfil si existe, bueno existia jsjsjsj',
                 'data' => $buscar
         ], 201);
+        }    
+    }
+    //? Funcion para edtar el perfil 
+    public function editarPerfil($id, Request $request){
+        //* Validamos los datos 
+        $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],  
+            'nombrePerfil'=>['nullable', 'string', 'max:50'],
+            'tipoPerfil'=>['nullable', 'string'],
+            'passwordPerfil'=>['nullable', 'string', 'max:8']
+        ]);
+        //* Se busca el perfil por medio de id
+        $buscar = Perfil::find($id);
+    //* Validamos el 
+        if(! $buscar){
+            return response()->json([
+                'status'=>'no se encuentra ese id',
+                'message'=>'el perfil no se encuentra'
+            ],401);
+
+        }else{
+        //* Se revisa que datos se cambiaran y pues los cambia
+        //TODO: hace falta resolver el problema de los cambios
+        $perfil->user_id = $request->user_id;
+        $nombre->nombrePerfil = $request->nombrePerfil;
+        $tipo->tipoPerfil = $request->tipoPerfil;
         }
         
+        //* se valida la contraseña a camniar 
+        if($request->falled('passwordPerfil')){
+            $perfil->passwordPerfil = Hash::make($request->passwordPerfil);
+        }
+        //* se Actualizan los cambios de lo que ya se valido 
+        $perfil->save();
+        $nombre->save();
+        $tipo->save();
+        //* se Manda una respuesta de ser correcto 
+        return response->json([
+            'status'=>'succes',
+            'message'=>'Cambios correctos al perfil',
+            'data'=> $perfil
+        ],200);
     }
+
 }

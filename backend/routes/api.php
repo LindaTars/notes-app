@@ -1,16 +1,27 @@
 <?php
 
 use App\Http\Controllers\Autcontroller;
+
+use App\Http\Controllers\NotaController;
 use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Route;
 
 // * Aqui se pondran las rutas para registrar un nuevo usuario
-Route::post('/registro', [Autcontroller::class,'registrar']);
+Route::post('/registro', [Autcontroller::class,'registrar']);//! Funciona
 //* Ruta pa hacer el logeo
-Route::post('/login', [Autcontroller::class,'ingresar']);
+Route::post('/login', [Autcontroller::class,'ingresar']);//! Funciona
 //* Ruta pa hacer un nuevo perfil 
-Route::post('/newPerfil', [PerfilController::class,'crearPerfil']);
+Route::post('/newPerfil', [PerfilController::class,'crearPerfil']);//! funciona
 //* Metodo Get para los perfiles
-Route::get('/viewPerfil', [PerfilController::class, 'mostrarPerfil']);
+Route::get('/viewPerfil', [PerfilController::class, 'mostrarPerfil']);//! Funciona
 //* Eliminar el perfil mediante el id
 Route::delete('deletePerfil/{id}', [PerfilController::class, 'eliminarPerfil']);//! Pasa por el cuerpo el body por que es una llave
+//* Editar perfil mediante id
+ 
+Route::put('updatePerfil/{id}', [PerfilController::class, 'editarPerfil']);//Todo: falta hacer funcionar esta funcion
+//* Ruta para crear tareas
+Route::post('createNota', [NotaController::class, 'crearNota']);//! Funciona
+//* Ruta para eliminar tarea
+Route::delete('deleteNota/{id}', [NotaController::class, 'eliminarTarea']);//! ya es funcional
+//* Ruta para mostrar todas las tareas
+Route::get('viewNota', [NotaController::class, 'mostrarTareas']);//Todo: aun no funcioan, error en las conecciones de la bd 
