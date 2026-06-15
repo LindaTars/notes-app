@@ -1,8 +1,28 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Autcontroller;
+
+use App\Http\Controllers\NotaController;
+use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// * Aqui se pondran las rutas para registrar un nuevo usuario
+Route::post('/registro', [Autcontroller::class,'registrar']);//! Funciona
+//* Ruta pa hacer el logeo
+Route::post('/login', [Autcontroller::class,'ingresar']);//! Funciona
+//* Ruta pa hacer un nuevo perfil 
+Route::post('/newPerfil', [PerfilController::class,'crearPerfil']);//! funciona
+//* Metodo Get para los perfiles
+Route::get('/viewPerfil', [PerfilController::class, 'mostrarPerfil']);//! Funciona
+//* Eliminar el perfil mediante el id
+Route::delete('/deletePerfil/{id}', [PerfilController::class, 'eliminarPerfil']);//! Pasa por el cuerpo el body por que es una llave
+//* Editar perfil mediante id
+Route::put('/updatePerfil/{id}', [PerfilController::class, 'editarPerfil']);//Todo: falta hacer funcionar esta funcion
+//* Ruta para crear tareas
+Route::post('/createNota', [NotaController::class, 'crearNota']);//! Funciona
+//* Ruta para eliminar tarea
+Route::delete('/deleteNota/{id}', [NotaController::class, 'eliminarTarea']);//! ya es funcional
+//* Ruta para mostrar todas las tareas
+Route::get('/viewNota', [NotaController::class, 'mostrarTareas']);
+//* Actualizar Nota 
+Route::put('/updateNota/{id}', [NotaController::class, 'actualizarNota']);
