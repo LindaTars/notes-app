@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Login from './components/Login'
 import Onboarding from './components/Onboarding'
+import Dashboard from './components/Dashboard'
 
 
 function App() {
@@ -18,23 +19,10 @@ function App() {
   //? perfil configurado ?
   if(perfilUsuario){
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#e2d2c7]">
-        <div className='bg-white rounded-2xl p-10 shadow-md text-center'>
-          <p className='text-[#1a2b35] font-bold text-xl mb-2'>¡Perfil creado con éxito!</p>
-          <p className='text-sm text-[#999] mb-1'>Es estudiante: {perfilUsuario.esEstudiante ? 'Si':'No'}</p>
-          {perfilUsuario.esEstudiante &&(
-            <p className='text-sm text-[#999]'>Materias: {perfilUsuario.materias.join(',')}</p>
-          )}
-          <p className='text-xs text-[#bbb] mt-4'>//Dashboard proximamente</p>
-          {/* NOTE: los nombres de las funciones tienen que coincidir con los useState de arriba */}
-          <button
-            onClick={() => {setPerfilUsuario(null); setMostrarOnboaring(false); setIsLogin(true)}}
-            className='mt-5 text-xs text-[#f24b6a] hover:underline'
-          >
-            Volver al inicio
-          </button>
-        </div>
-      </div>
+      <Dashboard
+        perfilUsuario={perfilUsuario}
+        username={usuarioPrueba.username}
+      />
     )
   }
 
