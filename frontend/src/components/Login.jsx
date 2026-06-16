@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 
 const Login = ( {login, setLogin} ) =>  {
-    const [formData, setFormData] = useState({ email: '', password: '', name:'', lastname:''});
+    const [formData, setFormData] = useState({ email: '', password: '', name:'', lastName:''});
     // const [isLogin, setIsLogin] = useState(true);
 
     const handleSubmit = async (e) => {
@@ -78,7 +78,7 @@ const Login = ( {login, setLogin} ) =>  {
                                     type="text"
                                     placeholder="Pérez"
                                     className="p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7] focus:border-[#f5820d] focus:bg-white outline-none transition-all text-sm"
-                                    onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
+                                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                                 />
                             </>
                         )}
