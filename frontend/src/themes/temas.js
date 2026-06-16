@@ -78,3 +78,5 @@ const temas = {
         sombra:'shadow-emerald-200'
     },
 }
+
+export default temas
