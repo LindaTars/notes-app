@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 
 const Login = ( {login, setLogin} ) =>  {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', password: '', name:'', lastname:''});
     // const [isLogin, setIsLogin] = useState(true);
 
     const handleSubmit = async (e) => {
@@ -39,19 +39,19 @@ const Login = ( {login, setLogin} ) =>  {
     //         console.error("Error de comunicación con el back", error);
     //     }
 
-    const endpoint = login ? '/api/login' : '/api/registro';
-    try {
-        const r = await fetch(endpoint, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formData),
-        })
-        const info = await r.json()
-        console.log("Respuesta: ", info)
-    } catch (error) {
-        console.error("Error de comunicación con el back", error)
-    }
-};
+        const endpoint = login ? '/api/login' : '/api/registro';
+        try {
+            const r = await fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData),
+            })
+            const info = await r.json()
+            console.log("Respuesta: ", info)
+        } catch (error) {
+            console.error("Error de comunicación con el back", error)
+        }
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#fef6f0]">
@@ -66,6 +66,22 @@ const Login = ( {login, setLogin} ) =>  {
                     </p>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                        {!login && (
+                            <>
+                                <input
+                                    type="text"
+                                    placeholder="Ana María"
+                                    className="p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7] focus:border-[#f5820d] focus:bg-white outline-none transition-all text-sm"
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Pérez"
+                                    className="p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7] focus:border-[#f5820d] focus:bg-white outline-none transition-all text-sm"
+                                    onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
+                                />
+                            </>
+                        )}
                         <input
                             type="email"
                             placeholder="tu_correo@ejemplo.com"

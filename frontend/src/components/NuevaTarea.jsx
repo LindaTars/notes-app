@@ -10,6 +10,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
     //! se usan valores por defecto para que no quede vacio
     const [formData, setFormData] = useState({
         nombreTarea:'',
+        fechaInicio:'',
         fechaEntrega:'',
         categoria:'personal',
         materia:'',
@@ -51,6 +52,9 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
 
         if(!formData.nombreTarea.trim()){
             nuevosErrores.nombreTarea = 'El nombre es obligatorio'
+        }
+        if(!formData.nombreTarea.trim()){
+            nuevosErrores.fechaInicio("Debes agregar una fecha de inicio")
         }
         if(!formData.fechaEntrega){
             nuevosErrores.fechaEntrega = 'Debes agregar una fecha de entrega'
@@ -137,10 +141,30 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                             <p className='text-red-400 text-xs mt-1'>{errores.nombreTarea}</p>
                         )}
                     </div>
+
+                    {/*campo de fecha de inicio*/}
+                    <div>
+                        <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>
+                            Fecha de inicio*
+                        </label>
+                        <input
+                            type='date'
+                            name='fechaInicio'
+                            value={formData.fechaInicio}
+                            onChange={handleChange}
+                            className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
+                                        focus:border-[#f5820d] focus:bg-white outline-none transition-all'
+                        
+                        />
+                        {errores.fechaInicio &&(
+                            <p className='text-red-400 text-xs mt-1'>{errores.fechaEntrega}</p>
+                        )}
+                    </div>
+
                     {/*campo de fecha de entrega*/}
                     <div>
                         <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>
-                            Fecha de entrega
+                            Fecha de entrega*
                         </label>
                         <input
                             type='date'
@@ -152,6 +176,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                         />
                         {errores.fechaEntrega &&(
                             <p className='text-red-400 text-xs mt-1'>{errores.fechaEntrega}</p>
+                            
                         )}
                     </div>
                     {/*campo categoría*/}
