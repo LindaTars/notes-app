@@ -34,7 +34,7 @@ class PerfilController extends Controller
             'user_id' =>$request->user_id,
             'nombrePerfil'=>$request->nombrePerfil,
             // 'tipoPerfil'=>$request->tipoPerfil,
-            'tipoPerfil' => json_encode($quePerfil),//! Resive el tipo de perfiil, que se analizo en el if
+            'tipoPerfil' => $quePerfil,//! Resive el tipo de perfiil, que se analizo en el if
             'passwordPerfil' => $request->passwordPerfil ? Hash::make($request->passwordPerfil) : null
         ]);
 
@@ -45,6 +45,51 @@ class PerfilController extends Controller
             'data' => $perfil
          ], 201);
     }
+    public function nuevasMaterias($id, Request $request){
+        $request->validate([
+            'materia'=>['required', 'string', 'max:50']
+        ]);
+        $perfil =Perfil::find($id);
+        //* Si no existe el perfil se manda un error
+        if (!$perfil){
+            return response()->json([
+                'status'=> 'error',
+                'message'=>'al parecer no existe ese perfil'
+            ]);
+        }
+        //* Sacamos el tipo de perfil de la funcion para crear el perfil
+        $elPerfil = $perfil->tipoPerfil;
+        if (!isset($elPerfil['materias'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Este tipo de perfil no puede registrar materias'
+            ], 400);
+        }
+        //* Sacamos las materias que ya existen 
+        $materiasExistentes= $elPerfil['materias'];
+
+        $materiasExistentes = array_values(array_filter($materiasExistentes));
+        //* se valida que no se repitan las materias
+        if (in_array($request->materia, $materiasExistentes)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Esta materia ya se encuentra registrada'
+            ], 422);    
+        }
+        //* Se guardan las nuevas materias 
+        $materiasExistentes[]=$request->materia;
+        //* Reasignamos el arreglo actualizado al objeto del perfil
+        $datosPerfil['materias'] = $materiasExistentes;
+        $perfil->tipoPerfil = $datosPerfil;
+        //*se guarda todo
+        $perfil->save();
+        return response()->json([
+            'status'=> 'OK',
+            'message'=> 'Se agrego al tarea',
+            'data'=>  $perfil
+        ]);
+    }
+
     public function mostrarPerfil (Request $request){
         //* Se sacan los datos de la tabla perfil 
         $perfiles = Perfil::with('user')->get();
@@ -55,7 +100,7 @@ class PerfilController extends Controller
             'data'=> $perfiles //* Muestra los perfiles
         ]);
     }
-    public function eliminarPerfil ($id){//! Se recibe lo que llega desde el body 
+    public function eliminarPerfil ($iidd){//! Se recibe lo que llega desde el body 
 
         $buscar =Perfil::find($id);//! se revisa que exista ese id qu ellega del body
         if(! $buscar ){

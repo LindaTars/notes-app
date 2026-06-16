@@ -26,9 +26,8 @@ class Perfil extends Model
     ];
 
     protected $casts = [
-        'materias'=> 'array',
+        'tipoPerfil'=> 'array',
     ];
-
 //* Funcion para rlacionar al perfil con el usuario 
     public function user(){
         //*Se usa belongsTo para acceder a user desde perfil 

@@ -37,6 +37,7 @@ class Autcontroller extends Controller
     }
     //!Funcion Iniciar secion 
     public function ingresar(Request $request){
+
         $request -> validate([
             'email' => ['required', 'string', 'max:100'],//Todo: cambiar por el email
             'password' => ['required', 'string', 'min:8']  
@@ -51,14 +52,27 @@ class Autcontroller extends Controller
                 'data' => $user
             ], 404);
          }else{
+            //* Creamos el token para que funcione 
+            $token = $user->createToken('cuentaToken')->plainTextToken;
+            //* Respondemos que si se creo bien 
+
             return response()->json([
                 'status'=>'success',
                 'message' => 'ingreso correctamente ',
-                'data' => $user
+                'data' => $user,
+                'token'=> $token
             ], 200);   
-  
-        };
-       
+        }
+
     }
-   
+            //* Funcion para eliminar el token al cerrar secion
+    public function salir(Request $request)
+        {
+            //* Para cerrar sesión, borramos el token actual del usuario
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Sesión cerrada correctamente'
+            ], 200);
+        }
 }
