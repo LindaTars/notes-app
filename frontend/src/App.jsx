@@ -7,21 +7,42 @@ import Dashboard from './components/Dashboard'
 function App() {
   const [isLogin, setIsLogin] = useState(true)
 
+  const handleLoginExitoso = (datosUsuario) => {
+    setUsuarioLogueado(datosUsuario)
+
+    const perfilGuardado = localStorage.getItem('perfilUsuario')
+    if (perfilGuardado) {
+      setPerfilUsuario(JSON.parse(perfilGuardado))
+    } else {
+      setMostrarOnboaring(true)
+    }
+  }
+
   //TODO el usuario tiene ya está registrado en la bd?
   const[mostrarOnboaring, setMostrarOnboaring] = useState(false)
 
   //? guargar el perfil que configura el usuario
-  const[perfilUsuario, setPerfilUsuario] = useState(null)
+  const[perfilUsuario, setPerfilUsuario] = useState(() => {
+    const guardado = localStorage.getItem('perfilUsuario')
+    return guardado ? JSON.parse(guardado) : null
+  })
+
+  //! usuario real
+  const [usuarioLogueado, setUsuarioLogueado] = useState(() =>{
+    const guardando = localStorage.getItem('usuario')
+    return guardando ? JSON.parse(guardando) : null
+  })
 
   //! ---SOLO PRUEBA--
   const[usuarioPrueba] = useState({username: 'Tester'})
 
-  //? perfil configurado ?
-  if(perfilUsuario){
+  //? perfil configurado Y sigue logueado?
+  //! antes esto se mostraba aunque ya no hubiera token, por eso "cerrar sesión" no servía
+  if(perfilUsuario && usuarioLogueado){
     return (
       <Dashboard
         perfilUsuario={perfilUsuario}
-        username={usuarioPrueba.username}
+        username={usuarioLogueado.name}
       />
     )
   }
@@ -30,7 +51,7 @@ function App() {
   if(mostrarOnboaring){
     return (
       <Onboarding 
-        username={usuarioPrueba.username}
+        username={usuarioLogueado ? usuarioLogueado.name : usuarioPrueba.username}
         setPerfilUsuario={setPerfilUsuario}
         setMostrarOnboaring={setMostrarOnboaring}
       />
@@ -40,7 +61,7 @@ function App() {
   //! sino, mostrar login o register según el estado
   return (
     <>
-      <Login login={isLogin} setLogin={setIsLogin} />
+      <Login login={isLogin} setLogin={setIsLogin} onLoginExitoso={handleLoginExitoso} />
             
       {/* ---SOLO PRUEBAS--- */}
       {/* TODO: borrar esto cuando el back este listo */}

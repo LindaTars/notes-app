@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import useTema from './useTema'
 
 //* formulario para nueva tarea 
 //* esto recibe 
@@ -33,6 +34,8 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
     const [errores, setErrores] = useState({})
     //!botón guardar
     const [guardando, setGuardando] = useState(false)
+
+    const { temaActual } = useTema()
 
     const handleChange = (e) => {
         setFormData({
@@ -102,41 +105,49 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
 
     return (
         <div 
-        className='fixed inset-0 bg-black/50 flex items-center justify-center z-20'
-        onClick={onCerrar}
+            className='fixed inset-0 bg-black/50 flex items-center justify-center z-20'
+            onClick={onCerrar}
         >
             {/*tarjeta del formulario*/}
             {/*stopPropagation --> evita que el click adentro cierre el modo modal*/}
             {/*detiene el clic antes de que llegue al "fondo"*/}
             <div
-            className='bg-white rounded-2xl p-8 w-full max-w-md shadow-xl mx-4'
-            onClick={(e) => e.stopPropagation()}
+                className={`rounded-2xl p-8 w-full max-w-md shadow-xl mx-4
+                    ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}`}
+                onClick={(e) => e.stopPropagation()}
             >
-                {/*titulo + bptón  de cerrar*/}
+                {/*titulo + botón de cerrar*/}
                 <div className='flex items-center justify-between mb-6'>
-                    <h2 className='text-lg font-bold text-[#1a2b35]'>Nueva tarea</h2>
+                    <h2 className={`text-lg font-bold ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
+                        Nueva tarea
+                    </h2>
                     <button
-                    onClick={onCerrar}
-                    className='text-[#bbb] hover:text-[#f24b6a] transition-all text-xl font-bold'
+                        onClick={onCerrar}
+                        className={`hover:text-[#f24b6a] transition-all text-xl font-bold
+                            ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}
                     >
                         ×
                     </button>
                 </div>
+
                 <div className='flex flex-col gap-4'>
                     {/*campo nombre*/}
                     <div>
-                        <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>Nombre</label>
+                        <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
+                            Nombre
+                        </label>
                         <input 
                             type='text'
                             name='nombreTarea'
                             placeholder='ej: Tarea de Cálculo...'
                             value={formData.nombreTarea}
                             onChange={handleChange}
-                            className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
-                                        focus:border-[#f5820d] focus:bg-white outline-none 
-                                        transition-all text-sm'
+                            className={`w-full p-3 rounded-xl border outline-none transition-all text-sm
+                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         />
-                        {/*Eror del campo, solo si hayun error*/}
+                        {/*Error del campo, solo si hay un error*/}
                         {errores.nombreTarea &&(
                             <p className='text-red-400 text-xs mt-1'>{errores.nombreTarea}</p>
                         )}
@@ -144,7 +155,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
 
                     {/*campo de fecha de inicio*/}
                     <div>
-                        <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>
+                        <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                             Fecha de inicio*
                         </label>
                         <input
@@ -152,9 +163,10 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                             name='fechaInicio'
                             value={formData.fechaInicio}
                             onChange={handleChange}
-                            className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
-                                        focus:border-[#f5820d] focus:bg-white outline-none transition-all'
-                        
+                            className={`w-full p-3 rounded-xl border outline-none transition-all
+                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         />
                         {errores.fechaInicio &&(
                             <p className='text-red-400 text-xs mt-1'>{errores.fechaEntrega}</p>
@@ -163,7 +175,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
 
                     {/*campo de fecha de entrega*/}
                     <div>
-                        <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>
+                        <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                             Fecha de entrega*
                         </label>
                         <input
@@ -171,25 +183,29 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                             name='fechaEntrega'
                             value={formData.fechaEntrega}
                             onChange={handleChange}
-                            className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
-                                        focus:border-[#f5820d] focus:bg-white outline-none transition-all'
+                            className={`w-full p-3 rounded-xl border outline-none transition-all
+                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         />
                         {errores.fechaEntrega &&(
                             <p className='text-red-400 text-xs mt-1'>{errores.fechaEntrega}</p>
-                            
                         )}
                     </div>
+
                     {/*campo categoría*/}
                     <div>
-                        <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>
+                        <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                             Categoría
                         </label> 
                         <select
                             name='categoria'
                             value={formData.categoria}
                             onChange={handleChange}
-                            className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
-                                        focus:border-[#f5820d] focus:bg-white outline-none transition-all text-sm'
+                            className={`w-full p-3 rounded-xl border outline-none transition-all text-sm
+                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         >
                             <option value='personal'>Personal</option>
                             {/*opciones de estudiante, solo si lo es*/}
@@ -202,21 +218,22 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                             )}
                         </select>
                     </div>
+
                     {/*campo materia, solo si es estudiante*/}
                     {perfilUsuario?.esEstudiante &&(
                         <div>
-                            <label
-                                className='text-xs font-semibold text-[#1a2b35] mb-1 block'
-                            >
+                            <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                                 Materia
                             </label>
-                            {/*Si no se escribió ninfuna materia se puede escribir manualmente*/}
+                            {/*Si no se escribió ninguna materia se puede escribir manualmente*/}
                             <select
                                 name='materia'
                                 value={formData.materia}
                                 onChange={handleChange}
-                                className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
-                                            focus:border-[#f5820d] focus:bg-white outline-none transition-all text-sm'
+                                className={`w-full p-3 rounded-xl border outline-none transition-all text-sm
+                                    ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                    ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                    ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                             >
                                 {/* recorrer las materias que guardó el usuario en el onboarding */}
                                 {perfilUsuario.materias?.map((materia, index) => (
@@ -228,10 +245,11 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                             )}
                         </div>
                     )}
+
                     {/*campo descripción*/}
                     <div>
-                        <label className='text-xs font-semibold text-[#1a2b35] mb-1 block'>
-                            Nota <span className='text-[#bbb] font-normal'>(opcional)</span>
+                        <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
+                            Nota <span className={`font-normal ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>(opcional)</span>
                         </label>
                         <textarea
                             name='descripcion'
@@ -239,25 +257,30 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                             value={formData.descripcion}
                             onChange={handleChange}
                             rows={3}
-                            className='w-full p-3 rounded-xl border border-[#fcd4b0] bg-[#fffaf7]
-                                        focus:border-[#f5820d] focus:bg-white outline-none 
-                                        transition-all text-sm resize-none'
+                            className={`w-full p-3 rounded-xl border outline-none transition-all text-sm resize-none
+                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         />
                     </div>
+
                     {/*botones*/}
                     <div className='flex gap-3 mt-2'>
                         <button
                             onClick={onCerrar}
-                            className='flex-1 rounded-xl border border-[#fcd4b0]
-                                        text-[#999] text-sm hover:bg-orange-50 transition-all'
+                            className={`flex-1 p-3 rounded-xl border text-sm hover:bg-orange-50 transition-all
+                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                ${temaActual ? temaActual.textoSecundario : 'text-[#999]'}`}
                         >
                             Cancelar
                         </button>
                         <button
                             onClick={handleGuardar}
                             disabled={guardando}
-                            className='flex p-3 rounded-xl bg-[#f5820d] hover:bg-[#d96e08] text-white
-                                        text-sm transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed'
+                            className={`flex-1 p-3 rounded-xl text-white text-sm transition-all
+                                        active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed
+                                ${temaActual ? temaActual.acento : 'bg-[#f5820d]'}
+                                ${temaActual ? temaActual.acentoHover : 'hover:bg-[#d96e08]'}`}
                         >
                             {guardando ? 'Guardando...':'Guardar'}
                         </button>

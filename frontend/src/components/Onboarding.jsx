@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState} from 'react'
+import useTema from './useTema';
 
 //? pantalla de bienvenida para nuevos usuarios
 
@@ -19,10 +20,12 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
     
     const[errorMaterias, setErrorMaterias] = useState("");
 
+    const { temaActual } = useTema()
+
     //? agregar materias a la lista 
     const agregarMateria =() => {
         //? input vacio --> nada 
-        //* .trim quita los espacios al inicio y fianl del texto
+        //* .trim quita los espacios al inicio y final del texto
         if (inputMateria.trim() === '') return
 
         setMaterias([...materias, inputMateria.trim()]);
@@ -59,22 +62,28 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
         });
 
         //? guardar el perfil
-        setPerfilUsuario({
+        const perfil = {
             esEstudiante: esEstudiante,
             materias: materias
-        })
+        }
+        localStorage.setItem('perfilUsuario', JSON.stringify(perfil))
+        setPerfilUsuario(perfil)
 
         //! se cierra esta página y envía al dashboard
         setMostrarOnboaring(false)
     }
 
     return (
-        <div className='min-h-screen flex items-center justify-center bg-[#e2d2c7]'>
-            <div className='bg-white rounded-2xl shadow-md shadow-orange-100 p-10 w-full max-w-md'>
-                <h2 className='text-2xl font-bold text-[#1a2b35] mb-1'>
+        <div className={`min-h-screen flex items-center justify-center
+            ${temaActual ? temaActual.fondo : 'bg-[#e2d2c7]'}`}>
+            <div className={`rounded-2xl shadow-md p-10 w-full max-w-md
+                ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
+                ${temaActual ? temaActual.sombra : 'shadow-orange-100'}`}>
+
+                <h2 className={`text-2xl font-bold mb-1 ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                     ¡Hola, {username || 'usuario'}!
                 </h2>
-                <p className='text-sm text-[#999] mb-8'>
+                <p className={`text-sm mb-8 ${temaActual ? temaActual.textoSecundario : 'text-[#999]'}`}>
                     Cuéntanos un poco sobre ti para personalizar tu experiencia
                 </p>
 
@@ -84,9 +93,9 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                         onClick={()=> setEsEstudiante(true)}
                         className={`flex-1 p-3 rounded-xl text-sm font-medium border-2 transition-all
                             ${esEstudiante === true
-                                ?'bg-[#f5820d] border-[#f5820d] text-white' //?seleccionado el botón
-                                :'bg-white border-[#fcd4b0] text-[#aaa] hover:border-[#f5820d]' //? no seleccionado
-                            } `}
+                                ? 'bg-[#f5820d] border-[#f5820d] text-white'
+                                : `${temaActual ? temaActual.fondoTarjeta : 'bg-white'} ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'} ${temaActual ? temaActual.textoSecundario : 'text-[#aaa]'} hover:border-[#f5820d]`
+                            }`}
                     >
                         Si, soy estudiante
                     </button>
@@ -99,8 +108,8 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                         }}
                         className={`flex-1 p-3 rounded-xl text-sm font-medium border-2 transition-all
                             ${esEstudiante === false
-                                ?'bg-[#f5820d] border-[#f5820d] text-white'
-                                :'bg-white border-[#fcd4b0] text-[#aaa] hover:border-[#f5820d]'
+                                ? 'bg-[#f5820d] border-[#f5820d] text-white'
+                                : `${temaActual ? temaActual.fondoTarjeta : 'bg-white'} ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'} ${temaActual ? temaActual.textoSecundario : 'text-[#aaa]'} hover:border-[#f5820d]`
                             }`}
                     >
                         No soy estudiante
@@ -110,11 +119,11 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                 {/*estudiante == true --> preguntar por sus materias*/}
                 {esEstudiante === true &&(
                     <div className='mb-6'>
-                        <p className='text-sm font-semibold text-[#1a2b35] mb-1'>
+                        <p className={`text-sm font-semibold mb-1 ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                             ¿Cuáles son tus materias?
                         </p>
 
-                        <p className='text-xs text-[#bbb] mb-3'>
+                        <p className={`text-xs mb-3 ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>
                             Escribe el nombre de tu materia y presiona Enter o el botón +
                         </p>
 
@@ -123,9 +132,10 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                                 type='text'
                                 value={inputMateria}
                                 placeholder='Cálculo Integral, Programación...'
-                                className='flex-1 p-3 rounded-xl border border-[#fcd4b0] 
-                                           bg-[#fffaf7] focus:border-[#f5820d] focus:bg-white 
-                                           outline-none transition-all text-sm'
+                                className={`flex-1 p-3 rounded-xl border outline-none transition-all text-sm
+                                    ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                                    ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                    ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                                 onChange={(e)=> setInputMateria(e.target.value)}
                                 onKeyDown={handleKeyDown}
                             />
@@ -150,9 +160,11 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                                 {materias.map((materia, index)=> (
                                     <span 
                                         key={index}
-                                        className='flex items-center gap-1 bg-[#fff2e8] border 
-                                                   border-[#fcd4b0] text-[#f5820d] text-xs
-                                                   px-3 py-1 rounded-full'
+                                        className={`flex items-center gap-1 border text-xs
+                                                   px-3 py-1 rounded-full
+                                                   ${temaActual ? temaActual.fondoInput : 'bg-[#fff2e8]'}
+                                                   ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
+                                                   ${temaActual ? temaActual.acentoTexto : 'text-[#f5820d]'}`}
                                     >
                                         {materia}
                                         <button
