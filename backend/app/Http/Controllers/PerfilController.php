@@ -7,7 +7,7 @@
 // use Illuminate\Http\Request;
 
 // class PerfilController extends Controller
-// {
+// { 
 //     //* Primero se cre ala funcin para crear usuarios CrearPerfil
 //      public function crearPerfil (Request $request){
 //         //*Validamos los datos a recibir 
@@ -45,6 +45,7 @@
 //             'data' => $perfil
 //          ], 201);
 //     }
+
 //     public function nuevasMaterias($id, Request $request){
 //         $request->validate([
 //             'materia'=>['required', 'string', 'max:50']

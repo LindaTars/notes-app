@@ -14,7 +14,7 @@ Route::post('/login', [Autcontroller::class,'ingresar']);//! Funciona
 Route::middleware('auth:sanctum')->group(function () {//! guarda todo se hacen privadas
     //* Ruta pa salir de la secsion 
     Route::post('/logout', [Autcontroller::class, 'salir']);
-        
+    Route::patch('/registro/{id}/newMateria', [Autcontroller::class, 'nuevasMaterias']);
     //* Ruta pa hacer un nuevo perfil 
     // Route::post('/newPerfil', [PerfilController::class,'crearPerfil']);//! funciona
     // //* Metodo Get para los perfiles

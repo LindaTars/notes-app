@@ -93,6 +93,7 @@ class NotaController extends Controller
             'data'=> $buscar
         ],200);
     } 
-    
 
 }
+    
+
