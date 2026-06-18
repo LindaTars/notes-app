@@ -38,7 +38,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    protected function perfiles(){
+    protected function notas(){
         return $this->hasMany(Perfil::class, 'user_id');
     }
+    
 }

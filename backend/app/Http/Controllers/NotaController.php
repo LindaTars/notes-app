@@ -9,7 +9,7 @@ class NotaController extends Controller
 {
     public function crearNota (Request $request){
         $request -> validate([
-            'perfil_id' =>['required', 'integer', 'exists:perfiles,id'],
+            'user_id' =>['required', 'integer', 'exists:users,id'],
             'nombreTarea' =>['required', 'string', 'max:50'], 
             'categoria'=>['required', 'string', 'max:20'],
             'Descripcion'=>['required', 'string', 'max:100'],
@@ -18,7 +18,7 @@ class NotaController extends Controller
             'fechaInicio'=>['nullable', 'date']
         ]);
         $nota = Nota::create([
-            'perfil_id'=>$request->perfil_id,
+            'user_id'=>$request->user_id,
             'nombreTarea' =>$request->nombreTarea,
             'categoria'=>$request->categoria,
             'Descripcion'=>$request->Descripcion,
@@ -50,7 +50,7 @@ class NotaController extends Controller
         }
     }
     public function mostrarTareas (Request $request){
-        $nota = Nota::with('perfiles')->get();
+        $nota = Nota::with('user')->get();
        // $perfiles = Perfil::with('user')->get();
         return response()->json([
              'status'=> 'bien',
@@ -60,7 +60,7 @@ class NotaController extends Controller
     }
     public function actualizarNota ($id,Request $request){
         $request->validate([
-            'perfil_id' =>['required', 'integer', 'exists:perfiles,id'],
+            'user_id' =>['required', 'integer', 'exists:users,id'],
             'nombreTarea' =>['nullable', 'string', 'max:50'], 
             'categoria'=>['nullable', 'string', 'max:20'],
             'Descripcion'=>['nullable', 'string', 'max:100'],
@@ -73,10 +73,10 @@ class NotaController extends Controller
         if(! $buscar){
             return response()->json([
             'status'=>'no se encuentra ese id',
-            'message'=>'el perfil no se encuentra'
+            'message'=>'la nota no se encuentra'
         ],404);
         }
-        $buscar->perfil_id = $request->perfil_id;
+        $buscar->user_id = $request->user_id;
         $buscar-> nombreTarea = $request->nombreTarea;
         $buscar->categoria = $request->categoria;
         $buscar->Descripcion = $request->Descripcion;
@@ -89,7 +89,7 @@ class NotaController extends Controller
         //* se Manda una respuesta de ser correcto 
         return response()->json([
             'status'=>'succes',
-            'message'=>'Cambios correctos al perfil',
+            'message'=>'Cambios correctos a la tarea',
             'data'=> $buscar
         ],200);
     } 

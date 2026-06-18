@@ -12,8 +12,7 @@ class Nota extends Model
     protected $table = 'notas';
     //* Definimos los campos que se deben de guardar desde el front 
     protected $fillable = [
-    
-        'perfil_id',
+        'user_id',
         'nombreTarea',
         'categoria',
         'fechaInicio',
@@ -22,9 +21,9 @@ class Nota extends Model
         'Descripcion'
     ];
 //* Funcion para relacionar el notas con las Perfil, inversa
-    public function perfiles(){
+    public function user(){
       //*Se usa belongsTo para hacer que Nota pertenesca a Perfil espesifico usando su ID
-        return $this->belongsTo(Perfil::class, 'perfil_id');
+        return $this->belongsTo(User::class, 'user_id');
         //return $this->belongsTo(User::class, 'user_id');
     }
 }

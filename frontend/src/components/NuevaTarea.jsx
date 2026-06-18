@@ -8,6 +8,17 @@ import useTema from './useTema'
 //? onCerrar --> cerrar el formulario sin guardar
 
 const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
+    // const [formData, setFormData] = useState({
+    //     perfil_id:'',
+    //     nombreTarea:'',
+    //     categoria:'',
+    //     fechaInicio:'',
+    //     fechaEntrega:'',
+    //     materia:'',
+    //     Descripcion:'',
+
+    //     });
+      
     //! se usan valores por defecto para que no quede vacio
     const [formData, setFormData] = useState({
         nombreTarea:'',
