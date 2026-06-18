@@ -1,16 +1,16 @@
 <?php
 
+// config/cors.php
 return [
-
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [],
-
-    'allowed_origins_patterns' => [
-        '#^https://.*\.vercel\.app$#',
+    'allowed_origins' => [
+        'https://sparkly-monstera-9cf3c1.netlify.app',
     ],
+
+    'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 
@@ -19,5 +19,4 @@ return [
     'max_age' => 0,
 
     'supports_credentials' => false,
-
 ];
