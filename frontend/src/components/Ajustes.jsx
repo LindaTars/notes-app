@@ -5,7 +5,7 @@ import temas from '../themes/temas'
 import useTema from './useTema'
 
 import {PayPalScriptProvider, PayPalButtons} from '@paypal/react-paypal-js'
-
+//? este es el apartado para los ajustes 
 //!datos de los planes
 const planes = [
     {
@@ -220,7 +220,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                 </div>
             </div>
 
-            {/* preferencias (solo premium) */}
+            {/*Esto es Para premium */}
             <div className='mb-6'>
                 <p className={`text-xs font-semibold uppercase tracking-wide mb-3 ${temaActual ? temaActual.textoSecundario : 'text-[#999]'}`}>
                     Preferencias
@@ -253,7 +253,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                                 Original
                             </button>
 
-                            {/* un botón pora cada tema  */}
+                            {/* Este es permite un boton para los temas asi premium  */}
                             {Object.values(temas).map(function(tema) {
                                 var colorMuestra = tema.acento.replace('bg-[', '').replace(']', '')
                                 return (
@@ -312,7 +312,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                 )}
             </div>
 
-            {/* sección upgrade */}
+            {/* sección Para hacernos premium */}
             {esPremium == false && (
                 <div className='rounded-2xl border-2 border-[#f5820d] bg-gradient-to-br from-[#fffaf7] to-[#fff2e8] p-5'>
                     <div className='flex items-center gap-2 mb-3'>
@@ -338,7 +338,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                 </div>
             )}
 
-            {/* si ya es premium */}
+            {/* En caso de ya ser  premium */}
             {esPremium == true && (
                 <div className='rounded-2xl bg-gradient-to-br from-[#fff2e8] to-[#fde0d0] p-4 flex items-center gap-3'>
                     <Crown size={20} className='text-[#f5820d] flex-shrink-0' />

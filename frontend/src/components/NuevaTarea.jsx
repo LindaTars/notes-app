@@ -30,8 +30,6 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
         //TODO agregar más campos de ser necesario
     })
 
-    //? si es estudiante y tiene materias, el <select> muestra la primera
-    //? por defecto aunque formData.materia siga vacío. Por eso la sincronizamos aquí.
     useEffect(() => {
         if(perfilUsuario?.esEstudiante && perfilUsuario.materias?.length > 0 && !formData.materia){
             setFormData(prev => ({
@@ -60,7 +58,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
         })
     }
 
-    //? los campos están vacíos ?
+    //? si los campos estan vacios
     const validar = () => {
         const nuevosErrores = {}
 
@@ -69,19 +67,19 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
         }
         if(!formData.nombreTarea.trim()){
             nuevosErrores.fechaInicio = 'Debes agregar una fecha de inicio'
-            // antes tenía nuevosErrores.fechaInicio("...") con paréntesis, eso tronaba
+            
         }
         if(!formData.fechaEntrega){
             nuevosErrores.fechaEntrega = 'Debes agregar una fecha de entrega'
         }
-        //? es estudiante = materia obligatoria ?
+        //? Si estudiante tiene a materia sera obligatoria
         if(perfilUsuario?.esEstudiante && !formData.materia.trim()){
             nuevosErrores.materia = 'Selecciona una materia'
         }
         return nuevosErrores
     }
 
-    //? si el usuario da clic en guardar...
+    //? Si el estudoianmte preciona guardar 
     const handleGuardar = async () => {
         const erroresEncontrados = validar()
         //! errores = no quiero seguir 
@@ -89,7 +87,6 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
             setErrores(erroresEncontrados)
             return
         }
-
         setGuardando(true)
 
         try {
@@ -120,14 +117,13 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
             onClick={onCerrar}
         >
             {/*tarjeta del formulario*/}
-            {/*stopPropagation --> evita que el click adentro cierre el modo modal*/}
-            {/*detiene el clic antes de que llegue al "fondo"*/}
+           
             <div
                 className={`rounded-2xl p-8 w-full max-w-md shadow-xl mx-4
                     ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}`}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/*titulo + botón de cerrar*/}
+                {/*titulo y  botón de cerrar*/}
                 <div className='flex items-center justify-between mb-6'>
                     <h2 className={`text-lg font-bold ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                         Nueva tarea
@@ -142,7 +138,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                 </div>
 
                 <div className='flex flex-col gap-4'>
-                    {/*campo nombre*/}
+                    {/*nombre*/}
                     <div>
                         <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                             Nombre
@@ -158,7 +154,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                                 ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
                                 ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         />
-                        {/*Error del campo, solo si hay un error*/}
+                        {/*Error de campu solo si hay un error*/}
                         {errores.nombreTarea &&(
                             <p className='text-red-400 text-xs mt-1'>{errores.nombreTarea}</p>
                         )}
@@ -204,7 +200,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                         )}
                     </div>
 
-                    {/*campo categoría*/}
+                    {/*campo de la categoría*/}
                     <div>
                         <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                             Categoría

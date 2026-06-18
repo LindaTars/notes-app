@@ -27,7 +27,7 @@ return new class extends Migration
         $table->date('fechaEntrega')->nullable(); //!es la fecha de entrega ya sea de un examen o proyecto 
         $table->date('fechaInicio')->nullable(); //!para almacenar la fecha de inicio 
         
-        $table->timestamps(); //! Define los valores de tiempo fechas
+        $table->timestamps(); //! Define los valores de tiempo fechas de cracion 
     });
     }
     /**

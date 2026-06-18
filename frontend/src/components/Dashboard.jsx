@@ -18,7 +18,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     //! Lista de tareas --> ya no hardcodeada, ahora viene del back
     const [tareas, setTareas] = useState([])
 
-    // para saber si todavía está cargando las tareas del back
+    //* para saber si todavía está cargando las tareas del back
     const [cargando, setCargando] = useState(true)
 
     // por si el fetch falla, guardar el mensaje de error
@@ -43,8 +43,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                 setCargando(true)
                 const data = await getTareas()
                 // TODO revisar cómo responde exactamente tu NotaController@mostrarTareas
-                // si en postman viene { data: [...] } --> usar data.data
-                // si viene directo [...] --> usar data solo
+   
                 setTareas(data.data ?? data)
             } catch (err) {
                 console.error('Error al cargar tareas:', err)
@@ -58,8 +57,8 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
         cargarTareas()
     }, [])
 
-    //? agregar la tarea nueva a la lista y cerrar el formulario
-    // ahora primero la manda al back y luego actualiza el estado local
+    //*agregar la tarea nueva a la lista y cerrar el formulario
+    //* ahora primero la manda al back y luego actualiza el estado local
     const handleGuardarTarea = async (tareaGuardada) => {
         if (!esPremium && tareas.length >= 10) {
             setLimiteAlcanzado(true)
@@ -68,7 +67,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
         }
         try {
             const data = await crearTarea(tareaGuardada)
-            // uso la tarea que regresa el back porque ya tiene el id real de la BD
+            //*Se usa la tarea que regresa el back porque ya tiene el id real de la BD
             setTareas(prev => [...prev, data.data ?? data])
             setMostrarFormulario(false)
         } catch (err) {
@@ -81,8 +80,8 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     const handleCompletar = (id) => {
         setCompletadas(prev => [...prev, id])
         setTimeout(() => {
-            // llamo al back para borrarlo, pero no espero respuesta (fire and forget)
-            // si falla, en el siguiente reload aparecerá de nuevo
+            //* Se llama al back para borrarlo, pero no espero respuest
+            //*si falla, en el siguiente reload aparecerá de nuevo
             //TODO mejorar esto después, manejar el error correctamente
             eliminarTarea(id).catch(err => console.error('Error al completar tarea:', err))
             setTareas(prev => prev.filter(t => t.id !== id))
@@ -91,7 +90,6 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     }
 
     //? eliminar tarea directamente
-    // ahora llama al back antes de quitar la tarea del estado
     const handleEliminar = async (id) => {
         try {
             await eliminarTarea(id)
@@ -108,13 +106,12 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
         localStorage.removeItem('usuario')
         window.location.reload()
     }
-
-    //! ===== ALERTA DE PRÓXIMAS ENTREGAS (premium) =====
+//! Alertas para las tareas que bienen 
     //? hoy sin horas, para que la comparación de días sea exacta
     const hoy = new Date()
     hoy.setHours(0, 0, 0, 0)
 
-    //? una tarea es "urgente" si le quedan 2 días o menos (o ya se pasó) y no está completada
+    //? una tarea es urgente si le quedan 2 días o menos (o ya se pasó) y no está completada
     //TODO tal vez hacer que el número de días sea configurable, por ahora dejo 2 fijo
     const esUrgente = (tarea) => {
         if (completadas.includes(tarea.id)) return false
@@ -125,7 +122,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
 
     const tareasUrgentes = tareas.filter(esUrgente)
 
-    // mientras el back responde, muestro un mensaje simple
+    //* mientras el back responde, muestra un mensaje simple
     //TODO hacer un spinner más bonito después
     if (cargando) return (
         <div className="min-h-screen flex items-center justify-center">
@@ -133,7 +130,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
         </div>
     )
 
-    // si el fetch falló, aviso al usuario
+    //*si el fetch falló, aviso al usuario
     if (errorTareas) return (
         <div className="min-h-screen flex items-center justify-center">
             <p className="text-sm text-[#f24b6a]">{errorTareas}</p>
@@ -143,7 +140,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     return (
         <div className={`min-h-screen ${temaActual ? temaActual.fondo : 'bg-[#e2d2c7]'}`}>
 
-            {/*--HEADER--*/}
+            {/*Headr*/}
             <header className={`px-6 py-4 flex items-center justify-between shadow-sm
                 ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
                 ${temaActual ? temaActual.sombra : 'shadow-orange-100'}`}>
@@ -166,7 +163,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                         {username ? username[0].toUpperCase() : '?'}
                     </button>
 
-                    {/*mini menú de perfil, solo si menuAbierto=true*/}
+                    {/*mini menú de perfil, solo si menuAbierto es true*/}
                     {menuAbierto && (
                         <div className={`absolute right-0 mt-2 w-44 rounded-xl shadow-lg z-10 border
                             ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
@@ -205,7 +202,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                 </div>
             </header>
 
-            {/*---CONTENIDO PRINCIPAL---*/}
+            {/*Contenido Pricipal chido*/}
             <main className='max-w-4xl mx-auto px-6 py-8'>
 
                 <div className='mb-8'>
@@ -220,7 +217,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                     </p>
                 </div>
 
-                {/*---ALERTA DE PRÓXIMAS ENTREGAS, solo premium---*/}
+                {/*Alerta de las Proximas entregas, solo premium*/}
                 {esPremium && tareasUrgentes.length > 0 && (
                     <div className='flex items-center gap-2 p-4 rounded-xl bg-red-50 border border-red-200 mb-8'>
                         <Bell size={16} className='text-[#f24b6a] flex-shrink-0' />
@@ -230,7 +227,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                     </div>
                 )}
 
-                {/*---AVISO DE LÍMITE DE TAREAS */}
+                {/*Aviso de limite de tareas, tambien si es premium*/}
                 {limiteAlcanzado && (
                     <div className='flex items-center gap-2 p-4 rounded-xl bg-orange-50 border border-orange-200 mb-8'>
                         <Bell size={16} className='text-[#f5820d] flex-shrink-0' />
@@ -241,8 +238,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                 )}
 
                 {/*
-                ---TARJETAS DE RESUMEN---
-                esto solo aparece si el usuario == estudiante
+              tarjeta resumes solo para estudiantes
                 */}
                 {perfilUsuario?.esEstudiante && (
                     <div className='grid grid-cols-3 gap-4 mb-8'>
@@ -283,7 +279,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                     </div>
                 )}
 
-                {/*---ANÁLISIS DE TAREAS, solo premium y solo estudiante---*/}
+                {/*Analicis de las tareas tambien si es solo premium y solo estudiante*/}
                 {perfilUsuario?.esEstudiante && esPremium && (
                     <div className={`rounded-2xl p-6 shadow-sm mb-8
                         ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
@@ -298,10 +294,10 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                     </div>
                 )}
 
-                {/* tareas + calendario */}
+                {/* tareas mas el calendario */}
                 <div className='flex flex-col lg:flex-row gap-6'>
 
-                    {/* columna izquierda: lista de tareas */}
+                    {/* columna izquierda visualiza la lista de tareas */}
                     <div className={`flex-1 rounded-2xl p-6 shadow-sm
                         ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
                         ${temaActual ? temaActual.sombra : 'shadow-orange-100'}`}>
@@ -324,7 +320,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                             </button>
                         </div>
 
-                        {/*---LISTA DE TAREAS---*/}
+                        {/*Lista de tareas*/}
                         {tareas.length === 0
                             ? (
                                 //* no tareas = mensaje
@@ -343,7 +339,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                                                         : `${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'} ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}`
                                                     }`}
                                             >
-                                                {/* checkbox completar */}
+                                                {/* checkbox para completar las tareas */}
                                                 <button onClick={() => handleCompletar(tarea.id)}>
                                                     <SquareCheckBig
                                                         size={16}
@@ -370,7 +366,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                                                     >
                                                         {tarea.nombreTarea}
                                                     </p>
-                                                    {/*mostrar materia si == estudiante && materia*/}
+                                                    {/* se musetra la materia si es estudiante y tiene  materia*/}
                                                     {perfilUsuario?.esEstudiante && tarea.materia && (
                                                         <p className={`text-xs ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>
                                                             {tarea.materia}
@@ -398,9 +394,9 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                             )
                         }
                     </div>
-                    {/* fin columna izquierda */}
+                    {/* fin de la columna  izquierda */}
 
-                    {/* columna derecha: calendario */}
+                    {/* Ahora la columna derecha que muestra el calendario */}
                     <div className={`w-full lg:w-72 rounded-2xl p-6 shadow-sm
                         ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
                         ${temaActual ? temaActual.sombra : 'shadow-orange-100'}`}>
@@ -411,16 +407,16 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                         {/*TODO agregar calendario de verdad*/}
                         <CalendarioSimple tareas={tareas} temaActual={temaActual} />
                     </div>
-                    {/* fin columna derecha */}
+                    {/* fin de la columna derecha */}
 
                 </div>
-                {/* fin tareas + calendario */}
+                {/* fin tareas y del calendario */}
 
             </main>
-            {/*==== FIN CONTENIDO ====*/}
+            {/*Fin del del contenido prinsipal*/}
 
-            {/*---FORMULARIO DE NUEVA TAREA---*/}
-            {/*solo se muestra si mostrarFormulario=true*/}
+            {/*Formulario para guardar nuevas tareas*/}
+            {/*solo se muestra si mostrarFormulario es igual a true*/}
             {mostrarFormulario && (
                 <NuevaTarea
                     perfilUsuario={perfilUsuario}
@@ -443,7 +439,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     )
 }
 
-//! ===== COMPONENTE ANÁLISIS DE TAREAS ====
+//! Cacho para el analicis de las tareas de premium
 const AnalisisTareas = ({ tareas, temaActual }) => {
 
     const categorias = ['examen', 'tarea', 'proyecto']
@@ -453,7 +449,7 @@ const AnalisisTareas = ({ tareas, temaActual }) => {
         proyecto: { nombre: 'Proyectos', color: '#1a2b35' }
     }
 
-    //? cuántas tareas hay de cada categoría
+    //? cuántas tareas hay de cada categoría, examen, proyecto, tarea
     const conteos = categorias.map(cat => ({
         categoria: cat,
         total: tareas.filter(t => t.categoria === cat).length
@@ -488,8 +484,8 @@ const AnalisisTareas = ({ tareas, temaActual }) => {
     )
 }
 
-//! ===== COMPONENTE CALENDARIO ====
-// ahora recibe temaActual para cambiar sus colores
+//! Componente para el calendario
+// *Ya recibe temaActual para cambiar sus colores
 const CalendarioSimple = ({ tareas, temaActual }) => {
 
     //? obtención del mes y año actual
@@ -560,7 +556,7 @@ const CalendarioSimple = ({ tareas, temaActual }) => {
                 ))}
 
                 {/*dias del mes*/}
-                {/* tienes que usar llaves {} y poner return explícito*/}
+            
                 {Array.from({ length: diasEnMes }).map(function(_, i) {
                     const dia = i + 1
                     const esHoy = dia === hoy.getDate()

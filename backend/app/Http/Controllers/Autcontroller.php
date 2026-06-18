@@ -126,10 +126,7 @@ class Autcontroller extends Controller
         ], 201);
     }
 
-    //! ===== esto es lo que le faltaba para que Onboarding.jsx funcione =====
-
-    //* guarda de una vez si es estudiante + todas sus materias (esto se llama UNA vez, al terminar el onboarding)
-    public function crearPerfil(Request $request)
+     public function crearPerfil(Request $request)
     {
         $request->validate([
             'esEstudiante' => ['required', 'boolean'],
@@ -137,11 +134,11 @@ class Autcontroller extends Controller
             'materias.*' => ['string', 'max:50']
         ]);
 
-        //* sacamos al usuario directo del token (no del body), así nadie puede mandar el id de otro usuario
+        //* sacamos al usuario directo del token,
         $usuario = $request->user();
 
         $usuario->es_estudiante = $request->esEstudiante;
-        //* TODO: esto pisa las materias que ya tuviera, por ahora está bien porque el onboarding solo se hace una vez
+        //*esto checa las materias que ya tuviera,esto se usa para el  onboarding que solo se hace una vez para guardar las materias
         $usuario->materia = implode(',', $request->materias ?? []);
         $usuario->save();
 
@@ -160,7 +157,7 @@ class Autcontroller extends Controller
     {
         $usuario = $request->user();
 
-        //? es_estudiante en null = todavía no pasó por el onboarding
+        //? si es_estudiante es igual a null entonces todavía no pasó por el onboarding
         if ($usuario->es_estudiante === null) {
             return response()->json([
                 'status' => 'success',
@@ -173,8 +170,8 @@ class Autcontroller extends Controller
             'status' => 'success',
             'message' => 'perfil encontrado',
             'data' => [
-                'esEstudiante' => (bool) $usuario->es_estudiante,
-                'materias' => $usuario->materia ? array_values(array_filter(explode(',', $usuario->materia))) : []
+                'esEstudiante' => (bool) $usuario->es_estudiante, //* mustra el tipo de estudiante que es 
+                'materias' => $usuario->materia ? array_values(array_filter(explode(',', $usuario->materia))) : []//* saca las materias del array de acuerdo al usuario
             ]
         ], 200);
     }

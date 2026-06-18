@@ -9,12 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //? por si acaso 'materia' tampoco existiera todavía
+            //? por si acaso materia tampoco existiera todavía
             if (!Schema::hasColumn('users', 'materia')) {
                 $table->string('materia')->nullable();
             }
-            //! esto es lo que realmente falta: si es estudiante o no
-            //* empieza en null = "todavía no configuró su perfil" (así sabemos si mandarlo a Onboarding)
+           
+            //* empieza en null , ppor lo tantro lo debemos mandar al umboaring
             if (!Schema::hasColumn('users', 'es_estudiante')) {
                 $table->boolean('es_estudiante')->nullable();
             }

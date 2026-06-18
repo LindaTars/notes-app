@@ -13,7 +13,7 @@ function App() {
 
     //? el usuario ya tiene perfil configurado en la bd?
     try {
-      // antes iba a localhost:5173/api/viewPerfil, ahora va al back correcto
+    
       const respuesta = await fetch(`${API_URL}/viewPerfil`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -28,7 +28,7 @@ function App() {
         localStorage.setItem('perfilUsuario', JSON.stringify(perfil))
         setPerfilUsuario(perfil)
       } else {
-        //? no tiene perfil todavía --> mandarlo al onboarding
+        //? no tiene perfil todavía va  mandarlo al onboarding
         localStorage.removeItem('perfilUsuario')
         setMostrarOnboaring(true)
       }
@@ -38,7 +38,7 @@ function App() {
     }
   }
 
-  //TODO el usuario ya está registrado en la bd?
+  //TODO Hace que el usuario ya etse en la bd
   const[mostrarOnboaring, setMostrarOnboaring] = useState(false)
 
   //? guardar el perfil que configura el usuario
@@ -53,7 +53,7 @@ function App() {
     return (guardando && guardando !== 'undefined') ? JSON.parse(guardando) : null
   })
 
-  //! ---SOLO PRUEBA---
+  //! Pruebas jsjsj
   const[usuarioPrueba] = useState({username: 'Tester'})
 
   //? perfil configurado Y sigue logueado?
@@ -83,16 +83,16 @@ function App() {
     <>
       <Login login={isLogin} setLogin={setIsLogin} onLoginExitoso={handleLoginExitoso} />
             
-      {/* ---SOLO PRUEBAS--- */}
+      {/* Bopton para pruebas*/}
       {/* TODO: borrar esto cuando el back esté listo */}
-      <button
+      {/* <button
         onClick={()=> setMostrarOnboaring(true)}
         className='fixed bottom-4 right-4 bg-[#1a2b35] 
                  text-white text-xs px-4 py-2 rounded-full
                  opacity-60 hover:opacity-100 transition-all'
       >
         Ir a onboarding
-      </button>
+      </button> */}
     </>
   )
 }

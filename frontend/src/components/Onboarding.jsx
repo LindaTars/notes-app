@@ -11,12 +11,12 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
     //? es estudiante?
     const[esEstudiante, setEsEstudiante] = useState(null);
 
-    //? es estudiante = true --> lista de materias
+    //? es estudiante = true manda la lista de materias
     const[materias, setMaterias] = useState([]) //* arreglo para guardar las materias
     
     //? input de las materias 
     const[inputMateria, setInputMateria] = useState("");
-    //? tareas == null --> error
+    //? tareas == null manda  error
     
     const[errorMaterias, setErrorMaterias] = useState("");
 
@@ -24,7 +24,7 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
 
     //? agregar materias a la lista 
     const agregarMateria =() => {
-        //? input vacio --> nada 
+        //? input vacio manda nada 
         //* .trim quita los espacios al inicio y final del texto
         if (inputMateria.trim() === '') return
 
@@ -138,7 +138,7 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                     </button>
                 </div>
 
-                {/*estudiante == true --> preguntar por sus materias*/}
+                {/*estudiante es igual a true se va a preguntar por sus materias*/}
                 {esEstudiante === true &&(
                     <div className='mb-6'>
                         <p className={`text-sm font-semibold mb-1 ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
