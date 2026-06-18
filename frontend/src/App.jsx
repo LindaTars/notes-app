@@ -2,10 +2,15 @@ import { useState } from 'react'
 import Login from './components/Login'
 import Onboarding from './components/Onboarding'
 import Dashboard from './components/Dashboard'
+<<<<<<< HEAD
 import { login as loginService } from '../services/api'; 
 import { Dashboard as dashbordService } from '../services/api'; 
 import { Onboarding as onboardingService } from '../services/api'; 
 
+=======
+// import { login as loginService } from '../services/api'; 
+import {login as loginService} from './services/api'
+>>>>>>> 88b6d052fd4ed67fc2a01dd960f5bd2872cee1eb
 const API_URL = import.meta.env.VITE_API_URL 
 
 function App() {
