@@ -25,11 +25,11 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+# composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
+RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
 # Configuración nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
