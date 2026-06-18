@@ -33,6 +33,6 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 # Configuración nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 80
 
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+EXPOSE 80
+CMD ["sh", "-c", "php artisan config:cache && php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"]
