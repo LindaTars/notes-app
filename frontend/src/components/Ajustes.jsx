@@ -1,22 +1,26 @@
 import React from 'react'
 import { useState } from 'react'
-import { X, Crown, Check, Palette, Bell, BarChart2, ListTodo, CreditCard, ChevronRight } from 'lucide-react'
+import { X, Crown, Check, Palette, Bell, BarChart2, ListTodo, ChevronRight } from 'lucide-react'
 import temas from '../themes/temas'
 import useTema from './useTema'
+
+import {PayPalScriptProvider, PayPalButtons} from '@paypal/react-paypal-js'
 
 //!datos de los planes
 const planes = [
     {
         id: 'mensual',
         nombre: 'Mensual',
-        precio: '$49',
+        precio: '49',
+        precioMostrar: '$49',
         periodo: 'por mes',
         descripcion: 'Ideal para probar Premium'
     },
     {
         id: 'anual',
         nombre: 'Anual',
-        precio: '$399',
+        precio: '399',
+        precioMostrar: '$399',
         periodo: 'por año',
         descripcion: 'Ahorra 32% vs mensual',
         recomendado: true
@@ -33,32 +37,44 @@ const beneficiosPremium = [
 //!principal componente
 const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
 
-    //? paso del flujo PayPal: null | 'planes' | 'pago' | 'confirmacion'
+    //? paso del flujo PayPal: null --> planes --> pago --> confirmación
     const [pasoPaypal, setPasoPaypal] = useState(null)
     const [planSeleccionado, setPlanSeleccionado] = useState('anual')
-    const [procesando, setProcesando] = useState(false)
 
     const { temaActual, cambiarTema } = useTema()
 
-    //? datos del formulario de pago simulado
-    const [datosPago, setDatosPago] = useState({
-        email: '',
-        nombreTarjeta: '',
-        numeroTarjeta: '',
-        expiracion: '',
-        cvv: ''
-    })
+    const payPalOptions = {
+        "client-id": 'AXbv6tUGQq-1xSWfJihI8uBU0P1omjQcv61PzIIui-DJVcWTfVWnXTLGd_gbJU5yD6sFNa_yx2OwIj_S',
+        currency: 'MXN',
+        intent: 'capture',
+    }
 
-    //? simular el proceso de pago
-    const handlePagar = async () => {
-        setProcesando(true)
-        //* simulación de una espera de red
-        await new Promise(function(resolve) {
-            setTimeout(resolve, 2000)
+    const createOrder = (data, actions) => {
+        const plan = planes.find(p => p.id === planSeleccionado)
+
+        return actions.order.create({
+            purchase_units:[
+                {
+                    description : `Suscripción Premium ${plan.nombre} - notesApp`,
+                    amount:{
+                        value: plan.precio,
+                    },
+                },
+            ],
         })
-        setProcesando(false)
-        setPasoPaypal('confirmacion')
+    }
+
+    const onApprove = async (data, actions) => {
+        const details = await actions.order.capture()
+
+        console.log("Detalles de la transación exitosa: ", details)
         setEsPremium(true)
+        setPasoPaypal('confirmacion')
+    }
+
+    const onError = (err) => {
+        console.error("Error en el SDK de PayPal: ", err)
+        alert("Ha ocurrido un problema al conectar con PayPal. Inténtelo de nuevo.")
     }
 
     //!render del paso de paypal
@@ -83,7 +99,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                                         <p className={`text-xs ${temaActual ? temaActual.textoSecundario : 'text-[#999]'}`}>{plan.descripcion}</p>
                                     </div>
                                     <div className='text-right'>
-                                        <p className='text-lg font-bold text-[#f5820d]'>{plan.precio}</p>
+                                        <p className='text-lg font-bold text-[#f5820d]'>{plan.precioMostrar}</p>
                                         <p className={`text-xs ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>{plan.periodo}</p>
                                     </div>
                                 </div>
@@ -110,68 +126,6 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
         return (
             <ModalBase onCerrar={() => setPasoPaypal('planes')} titulo='Pago seguro' temaActual={temaActual}>
 
-                {/* logo PayPal simulado */}
-                <div className={`flex items-center justify-center gap-2 mb-5 p-3 rounded-xl border
-                    ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
-                    ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}`}>
-                    <span className='text-[#003087] font-black text-lg'>Pay</span>
-                    <span className='text-[#009cde] font-black text-lg'>Pal</span>
-                    <span className={`text-xs ml-1 ${temaActual ? temaActual.textoSecundario : 'text-[#999]'}`}>— pago simulado —</span>
-                </div>
-
-                <div className='flex flex-col gap-3 mb-5'>
-                    <input
-                        type='email'
-                        placeholder='Correo de PayPal'
-                        className={`p-3 rounded-xl border outline-none text-sm
-                            ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
-                            ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
-                            ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
-                        onChange={e => setDatosPago({ ...datosPago, email: e.target.value })}
-                    />
-                    <input
-                        type='text'
-                        placeholder='Nombre en la tarjeta'
-                        className={`p-3 rounded-xl border outline-none text-sm
-                            ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
-                            ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
-                            ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
-                        onChange={e => setDatosPago({ ...datosPago, nombreTarjeta: e.target.value })}
-                    />
-                    <input
-                        type='text'
-                        placeholder='Número de tarjeta'
-                        maxLength={19}
-                        className={`p-3 rounded-xl border outline-none text-sm
-                            ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
-                            ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
-                            ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
-                        onChange={e => setDatosPago({ ...datosPago, numeroTarjeta: e.target.value })}
-                    />
-                    <div className='flex gap-3'>
-                        <input
-                            type='text'
-                            placeholder='MM/AA'
-                            maxLength={5}
-                            className={`flex-1 p-3 rounded-xl border outline-none text-sm
-                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
-                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
-                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
-                            onChange={e => setDatosPago({ ...datosPago, expiracion: e.target.value })}
-                        />
-                        <input
-                            type='text'
-                            placeholder='CVV'
-                            maxLength={3}
-                            className={`w-24 p-3 rounded-xl border outline-none text-sm
-                                ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
-                                ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}
-                                ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
-                            onChange={e => setDatosPago({ ...datosPago, cvv: e.target.value })}
-                        />
-                    </div>
-                </div>
-
                 {/* resumen del plan */}
                 <div className={`flex items-center justify-between p-3 rounded-xl border mb-5
                     ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
@@ -183,20 +137,20 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                         </p>
                     </div>
                     <p className='text-lg font-bold text-[#f5820d]'>
-                        {planes.find(p => p.id == planSeleccionado)?.precio}
+                        {planes.find(p => p.id == planSeleccionado)?.precioMostrar}
                     </p>
                 </div>
 
-                <button
-                    onClick={handlePagar}
-                    disabled={procesando}
-                    className='w-full bg-[#003087] hover:bg-[#002060] text-white p-3 rounded-xl text-sm font-semibold transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60'
-                >
-                    {procesando == true
-                        ? 'Procesando...'
-                        : <><CreditCard size={16} /> Pagar con PayPal</>
-                    }
-                </button>
+                {/* botones reales de paypal, esto reemplaza el formulario falso */}
+                <PayPalScriptProvider options={payPalOptions}>
+                    <PayPalButtons
+                        style={{ layout: 'vertical', color: 'gold' }}
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                    />
+                </PayPalScriptProvider>
+
             </ModalBase>
         )
     }
@@ -298,7 +252,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                                 Original
                             </button>
 
-                            {/* un botón por cada tema de temas.js */}
+                            {/* un botón pora cada tema  */}
                             {Object.values(temas).map(function(tema) {
                                 var colorMuestra = tema.acento.replace('bg-[', '').replace(']', '')
                                 return (
@@ -348,7 +302,7 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                 )}
             </div>
 
-            {/* sección upgrade (solo si no es premium) */}
+            {/* sección upgrade */}
             {esPremium == false && (
                 <div className='rounded-2xl border-2 border-[#f5820d] bg-gradient-to-br from-[#fffaf7] to-[#fff2e8] p-5'>
                     <div className='flex items-center gap-2 mb-3'>

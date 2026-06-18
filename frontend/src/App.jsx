@@ -7,13 +7,31 @@ import Dashboard from './components/Dashboard'
 function App() {
   const [isLogin, setIsLogin] = useState(true)
 
-  const handleLoginExitoso = (datosUsuario) => {
+  const handleLoginExitoso = async (datosUsuario) => {
     setUsuarioLogueado(datosUsuario)
 
-    const perfilGuardado = localStorage.getItem('perfilUsuario')
-    if (perfilGuardado) {
-      setPerfilUsuario(JSON.parse(perfilGuardado))
-    } else {
+    //? el usuario ya está registrado en la bd?
+    try {
+      const respuesta = await fetch('/api/viewPerfil', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      const info = await respuesta.json()
+
+      //? si count es 0 significa que no tiene perfil (data llega como arreglo vacío)
+      if (info.count > 0) {
+        //? el perfil viene dentro de un arreglo, se toma el primero
+        const perfil = info.data[0]
+        localStorage.setItem('perfilUsuario', JSON.stringify(perfil))
+        setPerfilUsuario(perfil)
+      } else {
+        //? no tiene perfil todavía --> mandarlo al onboarding
+        localStorage.removeItem('perfilUsuario')
+        setMostrarOnboaring(true)
+      }
+    } catch (error) {
+      console.error('Error al revisar el perfil: ', error)
       setMostrarOnboaring(true)
     }
   }

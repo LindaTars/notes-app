@@ -48,29 +48,50 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
         setMaterias(nuevaLista)
     }
 
+    //! mostrar mientras se guarda en el back
+    const [guardandoPerfil, setGuardandoPerfil] = useState(false)
+
     //! el usuario termina de configurar su perfil
-    const handleContinuar = () => {
+    const handleContinuar = async () => {
         //* validar que se haya puesto por lo menos una materia
         if(esEstudiante && materias.length === 0){
             setErrorMaterias('Agrega por lo menos una materia para continuar')
             return
         }
 
-        //TODO conexión con el back --> las materias se enviarán a la bd
-        console.log('perfil configurado: ',{
-            esEstudiante, materias
-        });
+        setGuardandoPerfil(true)
 
-        //? guardar el perfil
-        const perfil = {
-            esEstudiante: esEstudiante,
-            materias: materias
+        //? se manda el token para que el back sepa de qué usuario es este perfil
+        const token = localStorage.getItem('token')
+
+        try {
+            const respuesta = await fetch('/api/newPerfil', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    esEstudiante: esEstudiante,
+                    materias: materias
+                })
+            })
+            const info = await respuesta.json()
+            console.log('perfil guardado en el back: ', info)
+
+            //? el back regresa el perfil con su id, eso es lo que se guarda
+            //? Nota.php necesita ese id como perfil_id
+            localStorage.setItem('perfilUsuario', JSON.stringify(info.data))
+            setPerfilUsuario(info.data)
+
+            //! se cierra esta página y envía al dashboard
+            setMostrarOnboaring(false)
+
+        } catch (error) {
+            console.error('Error al guardar el perfil: ', error)
         }
-        localStorage.setItem('perfilUsuario', JSON.stringify(perfil))
-        setPerfilUsuario(perfil)
 
-        //! se cierra esta página y envía al dashboard
-        setMostrarOnboaring(false)
+        setGuardandoPerfil(false)
     }
 
     return (
@@ -184,10 +205,12 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
                 {esEstudiante !== null &&(
                     <button
                         onClick={handleContinuar}
+                        disabled={guardandoPerfil}
                         className='w-full bg-[#f5820d] hover:bg-[#d96e08] text-white 
-                                   p-3 rounded-xl text-sm transition-all active:scale-95 mt-2'
+                                   p-3 rounded-xl text-sm transition-all active:scale-95 mt-2
+                                   disabled:opacity-60 disabled:cursor-not-allowed'
                     >
-                        Comenzar
+                        {guardandoPerfil ? 'Guardando...' : 'Comenzar'}
                     </button>
                 )}
 

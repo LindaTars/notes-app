@@ -12,7 +12,6 @@ class Nota extends Model
     protected $table = 'notas';
     //* Definimos los campos que se deben de guardar desde el front 
     protected $fillable = [
-    
         'perfil_id',
         'nombreTarea',
         'categoria',
