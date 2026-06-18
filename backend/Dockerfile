@@ -29,7 +29,8 @@ COPY . .
 
 # Permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
+#RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 # Configuración nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
