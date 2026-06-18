@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'], //! Este es al que se le tiene que poner la url que nos da vercel
+    'allowed_origins' => ['https://notes-app-alpha-wheat.vercel.app/'], //! Este es al que se le tiene que poner la url que nos da vercel
 
     'allowed_origins_patterns' => [],
 
