@@ -1,25 +1,14 @@
 <?php
 
+// config/cors.php
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cross-Origin Resource Sharing (CORS) Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your settings for cross-origin resource sharing
-    | or "CORS". This determines what cross-origin operations may execute
-    | in web browsers. You are free to adjust these settings as needed.
-    |
-    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-    |
-    */
-
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://notes-app-alpha-wheat.vercel.app/'], //! Este es al que se le tiene que poner la url que nos da vercel
+    'allowed_origins' => [
+        'https://sparkly-monstera-9cf3c1.netlify.app',
+    ],
 
     'allowed_origins_patterns' => [],
 
@@ -30,5 +19,4 @@ return [
     'max_age' => 0,
 
     'supports_credentials' => false,
-
 ];
