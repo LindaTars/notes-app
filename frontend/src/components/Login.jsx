@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import useTema from './useTema';
-// ➔ IMPORTAMOS LAS FUNCIONES DE TU API.JS
+
 import { login as loginService } from '../services/api'; 
 
 const Login = ( {login, setLogin, onLoginExitoso} ) =>  {

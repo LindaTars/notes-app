@@ -4,6 +4,7 @@ import { X, Crown, Check, Palette, Bell, BarChart2, ListTodo, ChevronRight, Book
 import temas from '../themes/temas'
 import useTema from './useTema'
 
+
 import {PayPalScriptProvider, PayPalButtons} from '@paypal/react-paypal-js'
 //? este es el apartado para los ajustes 
 //!datos de los planes

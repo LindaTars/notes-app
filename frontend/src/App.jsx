@@ -3,6 +3,9 @@ import Login from './components/Login'
 import Onboarding from './components/Onboarding'
 import Dashboard from './components/Dashboard'
 import { login as loginService } from '../services/api'; 
+import { Dashboard as dashbordService } from '../services/api'; 
+import { Onboarding as onboardingService } from '../services/api'; 
+
 const API_URL = import.meta.env.VITE_API_URL 
 
 function App() {
