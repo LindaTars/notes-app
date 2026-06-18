@@ -1,17 +1,24 @@
-const BASE = 'https://notes-api-backend.onrender.com'
+const BASE = 'https://notes-app-back-liw2.onrender.com'
 
 export async function request(method, endpoint, body = null) {
     const token = localStorage.getItem('token')
-    const res = await fetch(`${BASE}/api${endpoint}`, { 
+    const res = await fetch(`${BASE}/api${endpoint}`, {
         method,
         headers: {
-            'Content-Type':'application/json',
-            ...(token && {Authorization: `Bearer ${token}`}),
+            'Content-Type': 'application/json',
+            ...(token && { Authorization: `Bearer ${token}` }),
         },
-        ...(body && {body: JSON.stringify(body)}),
+        ...(body && { body: JSON.stringify(body) }),
     })
-    const data = await res.json()
-    if(!res.ok) throw data 
+
+    let data = null
+    try {
+        data = await res.json()
+    } catch {
+        data = { message: res.statusText || 'Respuesta vacía del servidor' }
+    }
+
+    if (!res.ok) throw data
     return data
 }
 
