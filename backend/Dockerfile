@@ -11,7 +11,5 @@ ENV APP_ENV production
 ENV APP_DEBUG false
 ENV LOG_CHANNEL stderr
 ENV COMPOSER_ALLOW_SUPERUSER 1
-
-RUN composer install --no-dev --working-dir=/var/www/html
-
+RUN composer install --no-dev --working-dir=/var/www/html --ignore-platform-reqs
 CMD ["/start.sh"]
