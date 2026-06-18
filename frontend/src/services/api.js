@@ -1,9 +1,9 @@
-const BASE = 'https://notes-api-backend.onrender.com/api' 
+const BASE = 'https://notes-api-backend.onrender.com' 
 
 async function request(method, endpoint, body = null) {
     const token = localStorage.getItem('token')
 
-    const res = await fetch(`${BASE}${endpoint}`, { 
+    const res = await fetch(`${BASE}/api${endpoint}`, { 
         method,
         headers: {
             'Content-Type':'application/json',
