@@ -1,9 +1,9 @@
-const BASE = '/api'
+const BASE = 'https://notes-api-backend.onrender.com/api' 
 
 async function request(method, endpoint, body = null) {
     const token = localStorage.getItem('token')
 
-    const res = await fetch(`${BASE}${endpoint}`, {
+    const res = await fetch(`${BASE}${endpoint}`, { 
         method,
         headers: {
             'Content-Type':'application/json',
@@ -13,12 +13,12 @@ async function request(method, endpoint, body = null) {
     })
 
     const data = await res.json()
-    if(!res.ok) throw data //? atrapar el error 
+    if(!res.ok) throw data 
     return data
 }
 
 export const login = (email, password) =>
-    request('POST', '/register', datos)
+    request('POST', '/registro', { email, password }) 
 
 //! tareas
 export const getTareas = () => request('GET', '/tareas')
