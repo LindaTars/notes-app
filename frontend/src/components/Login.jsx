@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import useTema from './useTema';
-// ➔ Importamos ambas funciones limpiamente desde el inicio para evitar errores de compilación
-import { login as loginService, request } from '../services/api'; 
+// ➔ IMPORTAMOS LAS FUNCIONES DE TU API.JS
+import { login as loginService } from '../services/api'; 
 
 const Login = ( {login, setLogin, onLoginExitoso} ) =>  {
     const [formData, setFormData] = useState({ email: '', password: '', name:'', lastName:''});
@@ -52,12 +52,15 @@ const Login = ( {login, setLogin, onLoginExitoso} ) =>  {
 
         const endpoint = login ? '/api/login' : '/api/registro';
         try {
+            // ➔ CAMBIO CLAVE: En lugar del fetch manual a Vercel, llamamos a tu api.js centralizado.
+            // Esto rutea de manera automática usando la URL correcta de Render dependiente del estado del formulario.
             let info;
             if (login) {
-                // Si el usuario va a iniciar sesión, llamamos al endpoint correspondiente de tu backend Laravel
-                info = await request('POST', '/login', { email: formData.email, password: formData.password });
+                info = await loginService(formData.email, formData.password);
             } else {
-                // Si se va a registrar, mandamos todos los datos al endpoint de registro
+                // Pasamos todo el objeto formData para el registro (name, lastName, email, password)
+                // de acuerdo a la lógica interna que manejes.
+                const { request } = await import('../services/api');
                 info = await request('POST', '/registro', formData);
             }
             
