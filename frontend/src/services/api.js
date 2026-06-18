@@ -1,8 +1,7 @@
-const BASE = 'https://notes-api-backend.onrender.com' 
+const BASE = 'https://notes-api-backend.onrender.com'
 
-async function request(method, endpoint, body = null) {
+export async function request(method, endpoint, body = null) {
     const token = localStorage.getItem('token')
-
     const res = await fetch(`${BASE}/api${endpoint}`, { 
         method,
         headers: {
@@ -11,17 +10,16 @@ async function request(method, endpoint, body = null) {
         },
         ...(body && {body: JSON.stringify(body)}),
     })
-
     const data = await res.json()
     if(!res.ok) throw data 
     return data
 }
 
 export const login = (email, password) =>
-    request('POST', '/registro', { email, password }) 
+    request('POST', '/login', { email, password })
 
-//! tareas
-export const getTareas = () => request('GET', '/tareas')
-export const CrearTarea = (tarea) => request('POST', '/tareas', tarea)
-export const actualizarTarea = (id, tarea) => request('PUT', `/tareas/${id}`, tarea)
-export const eliminarTarea = (id) => request('DELETE', `/tareas/${id}`)
+//! notas
+export const getTareas = () => request('GET', '/viewNota')
+export const CrearTarea = (tarea) => request('POST', '/createNota', tarea)
+export const actualizarTarea = (id, tarea) => request('PUT', `/updateNota/${id}`, tarea)
+export const eliminarTarea = (id) => request('DELETE', `/deleteNota/${id}`)
