@@ -1,15 +1,17 @@
 import React from 'react';
 import { useState } from 'react';
 import useTema from './useTema';
+// ➔ IMPORTAMOS LAS FUNCIONES DE TU API.JS
+import { login as loginService } from '../services/api'; 
 
 const Login = ( {login, setLogin, onLoginExitoso} ) =>  {
     const [formData, setFormData] = useState({ email: '', password: '', name:'', lastName:''});
     // const [isLogin, setIsLogin] = useState(true);
 
     // if(info.status === 'success'){
-    //     localStorage.setItem('token', info.token)
-    //     localStorage.setItem('usuario', JSON.stringify(info.data))
-    //     onLoginExitoso(info.data)
+    //      localStorage.setItem('token', info.token)
+    //      localStorage.setItem('usuario', JSON.stringify(info.data))
+    //      onLoginExitoso(info.data)
     // }
 
     const { temaActual } = useTema()
@@ -22,40 +24,46 @@ const Login = ( {login, setLogin, onLoginExitoso} ) =>  {
 
         // try {
             //Todo checar url
-        //     const r = await fetch(`https://localhost:3000/${endpoint}`, {
-        //         method: 'POST', 
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify(formData),
-        //     })
-        //     const info = await r.json()
-        //     console.log("Respuesta: ", info)
+        //      const r = await fetch(`https://localhost:3000/${endpoint}`, {
+        //          method: 'POST', 
+        //          headers: { 'Content-Type': 'application/json' },
+        //          body: JSON.stringify(formData),
+        //      })
+        //      const info = await r.json()
+        //      console.log("Respuesta: ", info)
         // } catch (error) {
-        //     console.error("Error de comunicaición cn el back", error);
+        //      console.error("Error de comunicaición cn el back", error);
         // }
 
         //TODO prueba local
-    //     try {
-    //         const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-    //             method: 'POST',
-    //             body: JSON.stringify(formData),
-    //             headers: { 'Content-Type': 'application/json' },
-    //         });
+    //      try {
+    //          const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    //              method: 'POST',
+    //              body: JSON.stringify(formData),
+    //              headers: { 'Content-Type': 'application/json' },
+    //          });
 
-    //         const info = await response.json();
-    //         console.log("Respuesta: ", info);
+    //          const info = await response.json();
+    //          console.log("Respuesta: ", info);
             
-    //     } catch (error) {
-    //         console.error("Error de comunicación con el back", error);
-    //     }
+    //      } catch (error) {
+    //          console.error("Error de comunicación con el back", error);
+    //      }
 
         const endpoint = login ? '/api/login' : '/api/registro';
         try {
-            const r = await fetch(endpoint, {
-                method: 'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify(formData),
-            })
-            const info = await r.json()
+            // ➔ CAMBIO CLAVE: En lugar del fetch manual a Vercel, llamamos a tu api.js centralizado.
+            // Esto rutea de manera automática usando la URL correcta de Render dependiente del estado del formulario.
+            let info;
+            if (login) {
+                info = await loginService(formData.email, formData.password);
+            } else {
+                // Pasamos todo el objeto formData para el registro (name, lastName, email, password)
+                // de acuerdo a la lógica interna que manejes.
+                const { request } = await import('../services/api');
+                info = await request('POST', '/registro', formData);
+            }
+            
             console.log("Respuesta: ", info)
 
             if(info.status === 'success'){
