@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Login from './components/Login'
 import Onboarding from './components/Onboarding'
 import Dashboard from './components/Dashboard'
-
+import { login as loginService } from '../services/api'; 
 const API_URL = import.meta.env.VITE_API_URL 
 
 function App() {

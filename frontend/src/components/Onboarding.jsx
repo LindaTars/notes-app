@@ -66,7 +66,7 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
 
         try {
             console.log('token que se manda:', localStorage.getItem('token'))
-            const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/newPerfil`, {
+            const respuesta = await fetch(`https://notes-app-back-liw2.onrender.com/api/newPerfil`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
