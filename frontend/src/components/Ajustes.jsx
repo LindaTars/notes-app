@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { X, Crown, Check, Palette, Bell, BarChart2, ListTodo, ChevronRight } from 'lucide-react'
+import { X, Crown, Check, Palette, Bell, BarChart2, ListTodo, ChevronRight, BookOpenCheck } from 'lucide-react'
 import temas from '../themes/temas'
 import useTema from './useTema'
 
@@ -31,6 +31,7 @@ const beneficiosPremium = [
     { icono: <ListTodo size={15} />, texto: 'Tareas ilimitadas (gratis: máx. 10)' },
     { icono: <Palette size={15} />, texto: 'Cambio de temas y colores' },
     { icono: <Bell size={15} />, texto: 'Alertas de próximas entregas' },
+    // { icono: <BookOpenCheck size={15} />, texto:'Agrega más de 10 tareas'},
     { icono: <BarChart2 size={15} />, texto: 'Gráficas de análisis de tareas' },
 ]
 
@@ -291,6 +292,15 @@ const Ajustes = ({ onCerrar, esPremium, setEsPremium, perfilUsuario }) => {
                         <div className='flex items-center gap-2'>
                             <BarChart2 size={15} className='text-[#f5820d]' />
                             <span className={`text-sm ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>Análisis de tareas</span>
+                        </div>
+                        {esPremium == false && <Crown size={13} className='text-[#f5820d]' />}
+                    </div>
+                    <div className={`flex items-center justify-between p-3 rounded-xl border
+                        ${temaActual ? temaActual.fondoInput : 'bg-[#fffaf7]'}
+                        ${temaActual ? temaActual.borde : 'border-[#fcd4b0]'}`}>
+                        <div className='flex items-center gap-2'>
+                            <BookOpenCheck size={15} className='text-[#f5820d]' />
+                            <span className={`text-sm ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>Agrega más de 10 tareas</span>
                         </div>
                         {esPremium == false && <Crown size={13} className='text-[#f5820d]' />}
                     </div>

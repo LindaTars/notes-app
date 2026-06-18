@@ -12,7 +12,7 @@ class NotaController extends Controller
             'user_id' =>['required', 'integer', 'exists:users,id'],
             'nombreTarea' =>['required', 'string', 'max:50'], 
             'categoria'=>['required', 'string', 'max:20'],
-            'Descripcion'=>['required', 'string', 'max:100'],
+            'Descripcion'=>['nullable', 'string', 'max:100'],
             'materia'=>['nullable', 'string', 'max:50'],
             'fechaEntrega'=>['nullable', 'date' ],
             'fechaInicio'=>['nullable', 'date']

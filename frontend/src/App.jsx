@@ -3,6 +3,7 @@ import Login from './components/Login'
 import Onboarding from './components/Onboarding'
 import Dashboard from './components/Dashboard'
 
+const API_URL = import.meta.env.VITE_API_URL 
 
 function App() {
   const [isLogin, setIsLogin] = useState(true)
@@ -10,9 +11,10 @@ function App() {
   const handleLoginExitoso = async (datosUsuario) => {
     setUsuarioLogueado(datosUsuario)
 
-    //? el usuario ya está registrado en la bd?
+    //? el usuario ya tiene perfil configurado en la bd?
     try {
-      const respuesta = await fetch('/api/viewPerfil', {
+      // antes iba a localhost:5173/api/viewPerfil, ahora va al back correcto
+      const respuesta = await fetch(`${API_URL}/viewPerfil`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -36,30 +38,30 @@ function App() {
     }
   }
 
-  //TODO el usuario tiene ya está registrado en la bd?
+  //TODO el usuario ya está registrado en la bd?
   const[mostrarOnboaring, setMostrarOnboaring] = useState(false)
 
-  //? guargar el perfil que configura el usuario
+  //? guardar el perfil que configura el usuario
   const[perfilUsuario, setPerfilUsuario] = useState(() => {
     const guardado = localStorage.getItem('perfilUsuario')
-    return guardado ? JSON.parse(guardado) : null
+    return (guardado && guardado !== 'undefined') ? JSON.parse(guardado) : null
   })
 
   //! usuario real
   const [usuarioLogueado, setUsuarioLogueado] = useState(() =>{
     const guardando = localStorage.getItem('usuario')
-    return guardando ? JSON.parse(guardando) : null
+    return (guardando && guardando !== 'undefined') ? JSON.parse(guardando) : null
   })
 
-  //! ---SOLO PRUEBA--
+  //! ---SOLO PRUEBA---
   const[usuarioPrueba] = useState({username: 'Tester'})
 
   //? perfil configurado Y sigue logueado?
-  //! antes esto se mostraba aunque ya no hubiera token, por eso "cerrar sesión" no servía
   if(perfilUsuario && usuarioLogueado){
     return (
       <Dashboard
         perfilUsuario={perfilUsuario}
+        setPerfilUsuario={setPerfilUsuario}
         username={usuarioLogueado.name}
       />
     )
@@ -82,7 +84,7 @@ function App() {
       <Login login={isLogin} setLogin={setIsLogin} onLoginExitoso={handleLoginExitoso} />
             
       {/* ---SOLO PRUEBAS--- */}
-      {/* TODO: borrar esto cuando el back este listo */}
+      {/* TODO: borrar esto cuando el back esté listo */}
       <button
         onClick={()=> setMostrarOnboaring(true)}
         className='fixed bottom-4 right-4 bg-[#1a2b35] 
@@ -92,9 +94,7 @@ function App() {
         Ir a onboarding
       </button>
     </>
-
   )
-
 }
 
 export default App

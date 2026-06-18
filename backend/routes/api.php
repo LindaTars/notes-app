@@ -15,10 +15,11 @@ Route::middleware('auth:sanctum')->group(function () {//! guarda todo se hacen p
     //* Ruta pa salir de la secsion 
     Route::post('/logout', [Autcontroller::class, 'salir']);
     Route::patch('/registro/{id}/newMateria', [Autcontroller::class, 'nuevasMaterias']);
-    //* Ruta pa hacer un nuevo perfil 
-    // Route::post('/newPerfil', [PerfilController::class,'crearPerfil']);//! funciona
-    // //* Metodo Get para los perfiles
-    // Route::get('/viewPerfil', [PerfilController::class, 'mostrarPerfil']);//! Funciona
+    //* Ruta pa hacer un nuevo perfil (esto ahora vive en Autcontroller, ya no en PerfilController)
+    Route::post('/newPerfil', [Autcontroller::class, 'crearPerfil']);
+    //* Ruta para ver el perfil del usuario logueado
+    Route::get('/viewPerfil', [Autcontroller::class, 'verPerfil']);
+    //! las de abajo siguen comentadas, eran de PerfilController, ya no se usan
     // //* Eliminar el perfil mediante el id
     // Route::delete('/deletePerfil/{id}', [PerfilController::class, 'eliminarPerfil']);//! Pasa por el cuerpo el body por que es una llave
     // //* Editar perfil mediante id

@@ -65,15 +65,16 @@ const Onboarding = ({username, setPerfilUsuario, setMostrarOnboaring}) => {
         const token = localStorage.getItem('token')
 
         try {
-            const respuesta = await fetch('/api/newPerfil', {
+            console.log('token que se manda:', localStorage.getItem('token'))
+            const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/newPerfil`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    esEstudiante: esEstudiante,
-                    materias: materias
+            },
+            body: JSON.stringify({
+                esEstudiante: esEstudiante,
+                materias: materias
                 })
             })
             const info = await respuesta.json()

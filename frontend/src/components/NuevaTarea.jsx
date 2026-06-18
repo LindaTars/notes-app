@@ -8,6 +8,7 @@ import useTema from './useTema'
 //? onCerrar --> cerrar el formulario sin guardar
 
 const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
+
     // const [formData, setFormData] = useState({
     //     perfil_id:'',
     //     nombreTarea:'',
@@ -16,9 +17,8 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
     //     fechaEntrega:'',
     //     materia:'',
     //     Descripcion:'',
-
     //     });
-      
+
     //! se usan valores por defecto para que no quede vacio
     const [formData, setFormData] = useState({
         nombreTarea:'',
@@ -43,7 +43,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
 
     //! mostrar errores 
     const [errores, setErrores] = useState({})
-    //!botón guardar
+    //! botón guardar
     const [guardando, setGuardando] = useState(false)
 
     const { temaActual } = useTema()
@@ -68,12 +68,13 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
             nuevosErrores.nombreTarea = 'El nombre es obligatorio'
         }
         if(!formData.nombreTarea.trim()){
-            nuevosErrores.fechaInicio("Debes agregar una fecha de inicio")
+            nuevosErrores.fechaInicio = 'Debes agregar una fecha de inicio'
+            // antes tenía nuevosErrores.fechaInicio("...") con paréntesis, eso tronaba
         }
         if(!formData.fechaEntrega){
             nuevosErrores.fechaEntrega = 'Debes agregar una fecha de entrega'
         }
-        // ? es estudiante = materia obligatoria ?
+        //? es estudiante = materia obligatoria ?
         if(perfilUsuario?.esEstudiante && !formData.materia.trim()){
             nuevosErrores.materia = 'Selecciona una materia'
         }
@@ -81,36 +82,35 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
     }
 
     //? si el usuario da clic en guardar...
-    const handleGuardar = async() => {
+    const handleGuardar = async () => {
         const erroresEncontrados = validar()
         //! errores = no quiero seguir 
-        if(Object.keys(erroresEncontrados).length > 0){
+        if (Object.keys(erroresEncontrados).length > 0) {
             setErrores(erroresEncontrados)
             return
         }
 
         setGuardando(true)
 
-        //TODO conectarlo con el back 
-        try{
-            //! SIMULACIÓN
-            const respuesta = await fetch('https://jsonplaceholder.typicode.com/posts', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {'Content-Type':'application/json'}
-            })
-            const data = await respuesta.json()
-            console.log('tarea guardada (simulado): ', data)
-
-            //TODO id temporal
-            const tareaGuardada = {
-                ...formData,
-                id: Date.now() //! id temporal
+        try {
+            const payload = {
+                user_id: JSON.parse(localStorage.getItem('usuario'))?.id,
+                nombreTarea: formData.nombreTarea,
+                categoria: formData.categoria,
+                Descripcion: formData.descripcion, 
+                materia: formData.materia || null,
+                fechaInicio: formData.fechaInicio || null,
+                fechaEntrega: formData.fechaEntrega || null,
             }
-            onGuardar(tareaGuardada)
-        } catch (err){
+
+            console.log('payload que se manda:', JSON.stringify(payload))
+            console.log('usuario en localStorage:', localStorage.getItem('usuario'))
+            onGuardar(payload)
+
+        } catch (err) {
             console.log('Error al guardar la tarea: ', err)
         }
+
         setGuardando(false)
     }
 
@@ -180,7 +180,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                                 ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}
                         />
                         {errores.fechaInicio &&(
-                            <p className='text-red-400 text-xs mt-1'>{errores.fechaEntrega}</p>
+                            <p className='text-red-400 text-xs mt-1'>{errores.fechaInicio}</p>
                         )}
                     </div>
 
@@ -260,7 +260,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
                     {/*campo descripción*/}
                     <div>
                         <label className={`text-xs font-semibold mb-1 block ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
-                            Nota <span className={`font-normal ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>(opcional)</span>
+                            Nota <span className={`font-normal ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>*</span>
                         </label>
                         <textarea
                             name='descripcion'

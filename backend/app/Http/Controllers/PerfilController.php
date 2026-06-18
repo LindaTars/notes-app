@@ -150,8 +150,7 @@
 //             $buscar->passwordPerfil = Hash::make($request->passwordPerfil);
 //         }
 //         //* se Actualizan los cambios de lo que ya se valido 
-//         $buscar->save();
-  
+//         $buscar->save(); 
 //         //* se Manda una respuesta de ser correcto 
 //         return response()->json([
 //             'status'=>'succes',

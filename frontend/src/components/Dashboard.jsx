@@ -1,10 +1,11 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react' 
 import NuevaTarea from './NuevaTarea'
 import { NotebookPen, CircleFadingPlus, Trash2, SquareCheckBig, Bell, BarChart2 } from 'lucide-react'
 import { CalendarCheck2, CalendarFold } from 'lucide-react'
 import Ajustes from './Ajustes'
 import useTema from './useTema'
+import { getTareas, crearTarea, eliminarTarea } from '../services/notasService'
 
 const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
 
@@ -14,18 +15,14 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     const [mostrarAjustes, setMostrarAjustes] = useState(false)
     const [esPremium, setEsPremium] = useState(false)
 
-    //! Lista de tareas --> solo prueba
-    //TODO conectar la tabla TAREAS del back
-    const [tareas, setTareas] = useState([
-        {
-            id: 1, nombreTarea: 'Tarea de Ejemplo', categoria: 'personal',
-            fechaInicio: '2026-06-15', fechaEntrega: '2026-06-20', materia: '', descripcion: ''
-        },
-        {
-            id: 2, nombreTarea: 'Estudiar para el examen', categoria: 'examen',
-            fechaInicio: '2026-06-15', fechaEntrega: '2026-06-18', materia: 'inglés'
-        }
-    ])
+    //! Lista de tareas --> ya no hardcodeada, ahora viene del back
+    const [tareas, setTareas] = useState([])
+
+    // para saber si todavía está cargando las tareas del back
+    const [cargando, setCargando] = useState(true)
+
+    // por si el fetch falla, guardar el mensaje de error
+    const [errorTareas, setErrorTareas] = useState(null)
 
     //? ids de tareas marcadas como completadas
     const [completadas, setCompletadas] = useState([])
@@ -33,26 +30,76 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     //? mostrar u ocultar formulario de nueva tarea
     const [mostrarFormulario, setMostrarFormulario] = useState(false)
 
+    //? limite de tareas
+    const [limiteAlcanzado, setLimiteAlcanzado] = useState(false)
+
     const { temaActual } = useTema()
 
+    // useEffect con [] vacío = se ejecuta una sola vez cuando el componente monta
+    // aquí es donde le pido las tareas al back
+    useEffect(() => {
+        const cargarTareas = async () => {
+            try {
+                setCargando(true)
+                const data = await getTareas()
+                // TODO revisar cómo responde exactamente tu NotaController@mostrarTareas
+                // si en postman viene { data: [...] } --> usar data.data
+                // si viene directo [...] --> usar data solo
+                setTareas(data.data ?? data)
+            } catch (err) {
+                console.error('Error al cargar tareas:', err)
+                setErrorTareas('No se pudieron cargar las tareas. Intenta recargar.')
+            } finally {
+                // con o sin error, ya no estamos cargando
+                setCargando(false)
+            }
+        }
+
+        cargarTareas()
+    }, [])
+
     //? agregar la tarea nueva a la lista y cerrar el formulario
-    const handleGuardarTarea = (tareaGuardada) => {
-        setTareas([...tareas, tareaGuardada])
-        setMostrarFormulario(false)
+    // ahora primero la manda al back y luego actualiza el estado local
+    const handleGuardarTarea = async (tareaGuardada) => {
+        if (!esPremium && tareas.length >= 10) {
+            setLimiteAlcanzado(true)
+            setTimeout(() => setLimiteAlcanzado(false), 3000)
+            return
+        }
+        try {
+            const data = await crearTarea(tareaGuardada)
+            // uso la tarea que regresa el back porque ya tiene el id real de la BD
+            setTareas(prev => [...prev, data.data ?? data])
+            setMostrarFormulario(false)
+        } catch (err) {
+            console.error('Error al guardar tarea:', err)
+            //TODO mostrar algún mensaje de error al usuario aquí
+        }
     }
 
     //? marcar como completada y eliminar después de 1.5s
     const handleCompletar = (id) => {
         setCompletadas(prev => [...prev, id])
         setTimeout(() => {
+            // llamo al back para borrarlo, pero no espero respuesta (fire and forget)
+            // si falla, en el siguiente reload aparecerá de nuevo
+            //TODO mejorar esto después, manejar el error correctamente
+            eliminarTarea(id).catch(err => console.error('Error al completar tarea:', err))
             setTareas(prev => prev.filter(t => t.id !== id))
             setCompletadas(prev => prev.filter(c => c !== id))
         }, 1500)
     }
 
     //? eliminar tarea directamente
-    const handleEliminar = (id) => {
-        setTareas(prev => prev.filter(t => t.id !== id))
+    // ahora llama al back antes de quitar la tarea del estado
+    const handleEliminar = async (id) => {
+        try {
+            await eliminarTarea(id)
+            setTareas(prev => prev.filter(t => t.id !== id))
+        } catch (err) {
+            console.error('Error al eliminar tarea:', err)
+            //TODO mostrar algo al usuario aquí también
+        }
     }
 
     //? cerrar sesión
@@ -77,6 +124,21 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
     }
 
     const tareasUrgentes = tareas.filter(esUrgente)
+
+    // mientras el back responde, muestro un mensaje simple
+    //TODO hacer un spinner más bonito después
+    if (cargando) return (
+        <div className="min-h-screen flex items-center justify-center">
+            <p className="text-sm text-[#999]">Cargando tareas...</p>
+        </div>
+    )
+
+    // si el fetch falló, aviso al usuario
+    if (errorTareas) return (
+        <div className="min-h-screen flex items-center justify-center">
+            <p className="text-sm text-[#f24b6a]">{errorTareas}</p>
+        </div>
+    )
 
     return (
         <div className={`min-h-screen ${temaActual ? temaActual.fondo : 'bg-[#e2d2c7]'}`}>
@@ -113,7 +175,7 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                                 <p className={`text-xs font-semibold ${temaActual ? temaActual.texto : 'text-[#1a2b35]'}`}>
                                     {username}
                                 </p>
-                                {/*TODO mostrar el email (sacarlo del back)*/}
+                                {/*TODO mostrar el email (sacarlo del back con /viewPerfil)*/}
                                 <p className={`text-xs ${temaActual ? temaActual.textoSecundario : 'text-[#bbb]'}`}>
                                     {perfilUsuario?.esEstudiante ? 'Cuenta estudiante' : 'Cuenta personal'}
                                 </p>
@@ -168,6 +230,16 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                     </div>
                 )}
 
+                {/*---AVISO DE LÍMITE DE TAREAS */}
+                {limiteAlcanzado && (
+                    <div className='flex items-center gap-2 p-4 rounded-xl bg-orange-50 border border-orange-200 mb-8'>
+                        <Bell size={16} className='text-[#f5820d] flex-shrink-0' />
+                        <p className='text-sm text-[#f5820d] font-medium'>
+                            Alcanzaste el límite de 10 tareas. ¡Hazte premium para agregar más! 
+                        </p>
+                    </div>
+                )}
+
                 {/*
                 ---TARJETAS DE RESUMEN---
                 esto solo aparece si el usuario == estudiante
@@ -212,7 +284,6 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
                 )}
 
                 {/*---ANÁLISIS DE TAREAS, solo premium y solo estudiante---*/}
-                {/*TODO tal vez en un futuro agregar más tipos de gráfica, por ahora solo por categoría*/}
                 {perfilUsuario?.esEstudiante && esPremium && (
                     <div className={`rounded-2xl p-6 shadow-sm mb-8
                         ${temaActual ? temaActual.fondoTarjeta : 'bg-white'}
@@ -373,13 +444,9 @@ const Dashboard = ({ perfilUsuario, setPerfilUsuario, username }) => {
 }
 
 //! ===== COMPONENTE ANÁLISIS DE TAREAS ====
-//* barras hechas a mano con divs, no usé ninguna librería de gráficas
 const AnalisisTareas = ({ tareas, temaActual }) => {
 
-    //? solo estas 3 categorías nos interesan para el análisis
     const categorias = ['examen', 'tarea', 'proyecto']
-
-    //? nombre bonito y color para cada categoría (mismos colores que ya usaba el punto de cada tarea)
     const infoCategoria = {
         examen: { nombre: 'Exámenes', color: '#f5820d' },
         tarea: { nombre: 'Tareas', color: '#f24b6a' },
@@ -392,8 +459,6 @@ const AnalisisTareas = ({ tareas, temaActual }) => {
         total: tareas.filter(t => t.categoria === cat).length
     }))
 
-    //? el máximo nos sirve para que las barras sean proporcionales
-    //! el Math.max(...., 1) es para que no truene si no hay tareas todavía (división entre 0)
     const maximo = Math.max(...conteos.map(c => c.total), 1)
 
     return (
@@ -404,7 +469,6 @@ const AnalisisTareas = ({ tareas, temaActual }) => {
                         {infoCategoria[c.categoria].nombre}
                     </p>
 
-                    {/*la barra en sí, el ancho cambia según el conteo*/}
                     <div className='flex-1 h-3 rounded-full bg-[#f5f5f5] overflow-hidden'>
                         <div
                             className='h-full rounded-full transition-all'
