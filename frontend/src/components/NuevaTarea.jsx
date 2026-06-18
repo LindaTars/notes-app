@@ -65,7 +65,7 @@ const NuevaTarea = ({perfilUsuario, onGuardar, onCerrar}) => {
         if(!formData.nombreTarea.trim()){
             nuevosErrores.nombreTarea = 'El nombre es obligatorio'
         }
-        if(!formData.nombreTarea.trim()){
+        if(!formData.fechaInicio){
             nuevosErrores.fechaInicio = 'Debes agregar una fecha de inicio'
             
         }
