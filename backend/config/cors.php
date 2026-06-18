@@ -7,7 +7,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://sparkly-monstera-9cf3c1.netlify.app',
+        '*',
     ],
 
     'allowed_origins_patterns' => [],
