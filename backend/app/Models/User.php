@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'lastName',
+        'materia'
       //  'userName'//todo: Eliminar,
     ];
     protected $hidden = [
@@ -38,7 +39,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    protected function perfiles(){
+    protected function notas(){
         return $this->hasMany(Perfil::class, 'user_id');
     }
+    
 }

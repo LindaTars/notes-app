@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('notas', function (Blueprint $table) {
         $table->id(); //! id de nota, se define asi para mayor pracicidad
         // !Conexión al perfil que creamos en el paso anterior
-        $table->foreignId('perfil_id')->constrained('perfiles')->onDelete('cascade');
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
         
         //! Atributos para la tabla
         $table->string('nombreTarea'); //!nombre de la tarea
