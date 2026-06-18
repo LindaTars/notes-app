@@ -1,5 +1,4 @@
-FROM php:8.3-fpm-alpine
-
+FROM php:8.4-fpm-alpine
 # Instalar dependencias
 RUN apk add --no-cache \
     nginx \
